@@ -45,7 +45,7 @@
                         <option value="Competition">Competitions</option>
                         <option value="Paper Publication">Paper Publications</option>
                         <option value="Workshop/Seminar">Workshops</option>
-                    </option>
+                    </select>
                 </div>
             </div>
 

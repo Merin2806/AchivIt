@@ -48,20 +48,61 @@
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
-                    <!-- Roll Number / Branch Dropdown (Two-col) -->
+                    <!-- Roll Number / Phone Number (Two-col) -->
                     <div class="two-col">
                         <div class="form-group">
                             <label for="roll_number">Roll Number</label>
                             <input id="roll_number" name="roll_number" type="text" placeholder="21CS047" required>
                         </div>
                         <div class="form-group">
+                            <label for="phone_number">Phone Number</label>
+                            <input id="phone_number" name="phone_number" type="text" placeholder="e.g. 9876543210" required>
+                        </div>
+                    </div>
+
+                    <!-- Branch / Batch (Two-col) -->
+                    <div class="two-col">
+                        <div class="form-group">
                             <label for="branch">Branch</label>
                             <select id="branch" name="branch" required>
                                 <option value="" disabled selected>Select Branch</option>
-                                <option value="Computer Science">Computer Science</option>
-                                <option value="Electronics">Electronics</option>
-                                <option value="Mechanical">Mechanical</option>
-                                <option value="Civil">Civil</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Computer Engineering">Computer Engineering</option>
+                                <option value="Electronics Engineering">Electronics Engineering</option>
+                                <option value="EXTC">EXTC</option>
+                                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="batch">Batch</label>
+                            <input id="batch" name="batch" type="text" placeholder="e.g. 2024-2028" required>
+                        </div>
+                    </div>
+
+                    <!-- Year / Semester (Two-col) -->
+                    <div class="two-col">
+                        <div class="form-group">
+                            <label for="year">Year</label>
+                            <select id="year" name="year" required>
+                                <option value="" disabled selected>Select Year</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="semester">Semester</label>
+                            <select id="semester" name="semester" required>
+                                <option value="" disabled selected>Select Semester</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
                             </select>
                         </div>
                     </div>

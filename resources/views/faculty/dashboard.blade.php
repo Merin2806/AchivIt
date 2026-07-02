@@ -8,7 +8,7 @@
         <div class="greeting-card bg-gradient-to-r from-[#1E293B] to-[#1D4ED8] shadow-[0_10px_30px_rgba(30,41,59,0.2)] flex flex-col md:flex-row justify-between items-center gap-6 p-[28px] md:px-[32px]">
             <div class="flex flex-col items-start text-left">
                 <h2 class="text-[20px] font-extrabold text-white tracking-tight mb-2 flex items-center gap-2">
-                    Good Morning, Dr. Priya 👩‍🏫
+                    Welcome, Dr. Priya 👩‍🏫
                 </h2>
                 <p class="text-[14px] text-white/80 max-w-[500px]">
                     You have <strong class="text-white">8 pending submissions</strong> awaiting your evaluation in the Computer Science department.

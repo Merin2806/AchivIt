@@ -3,7 +3,7 @@
     <!-- Left info -->
     <div class="flex flex-col items-start text-left">
         <h2 class="text-[24px] font-extrabold text-white tracking-tight mb-2">
-            Good Morning, {{ explode(' ', Auth::user()->name)[0] }} 👋
+            Welcome, {{ explode(' ', Auth::user()->name)[0] }} 👋
         </h2>
         <p class="text-[14px] text-white/80 mb-6 max-w-[500px]">
             You have 3 submissions pending review by faculty advisors. Keep up the great work!

@@ -32,12 +32,6 @@
         <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-[60px] items-center">
             <!-- Left Column -->
             <div class="flex flex-col items-start text-left">
-                <!-- Pulse Banner -->
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-blue-200 bg-[#EFF6FF] text-[#2563EB] text-xs font-semibold mb-6">
-                    <span class="w-2 h-2 rounded-full bg-[#2563EB] pulse-dot"></span>
-                    Now live at VIT College — 2025
-                </div>
-
                 <!-- Headline -->
                 <h1 class="text-[40px] md:text-[52px] font-extrabold tracking-[-2px] text-[#1E293B] leading-[1.1] mb-6">
                     Celebrate Every <br>
@@ -52,13 +46,16 @@
                 <!-- CTA Row -->
                 <div class="flex flex-wrap gap-4 mb-10 w-full sm:w-auto">
                     <a href="{{ route('login') }}" class="btn btn-primary btn-lg w-full sm:w-auto rounded-lg">
-                        Login to Portal
+                        Student Login
                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                         </svg>
                     </a>
                     <a href="{{ route('register') }}" class="btn btn-outline btn-lg w-full sm:w-auto rounded-lg">
                         Create Account
+                    </a>
+                    <a href="{{ route('faculty.login') }}" class="btn btn-outline btn-lg w-full sm:w-auto rounded-lg">
+                        Faculty Login
                     </a>
                 </div>
 

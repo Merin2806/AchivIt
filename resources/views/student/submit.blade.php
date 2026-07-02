@@ -140,4 +140,39 @@
             </div>
         </div>
     </div>
+
+    <!-- Script to handle dynamic file selection display -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fileInput = document.getElementById('file-input');
+            if (fileInput) {
+                fileInput.addEventListener('change', function (e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const dropzone = this.closest('.upload-zone');
+                        if (dropzone) {
+                            const titleSpan = dropzone.querySelector('span.text-sm');
+                            const descSpan = dropzone.querySelector('span.text-xs');
+                            const button = dropzone.querySelector('button');
+                            const svg = dropzone.querySelector('svg');
+
+                            if (titleSpan) {
+                                titleSpan.textContent = "Selected: " + file.name;
+                            }
+                            if (descSpan) {
+                                descSpan.textContent = (file.size / (1024 * 1024)).toFixed(2) + " MB";
+                            }
+                            if (button) {
+                                button.textContent = "Change File";
+                            }
+                            if (svg) {
+                                svg.classList.remove('text-[#94A3B8]');
+                                svg.classList.add('text-[#22C55E]');
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </x-app-layout>

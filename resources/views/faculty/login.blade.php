@@ -69,14 +69,16 @@
                         <input id="password" type="password" name="password" required placeholder="••••••••">
                     </div>
 
-                    <!-- Department Dropdown -->
+                    <!-- Branch Dropdown -->
                     <div class="form-group mb-6">
-                        <label for="department">Department</label>
-                        <select id="department" name="department" required>
-                            <option value="" disabled selected>Select Department</option>
-                            <option value="Computer Science Engineering">Computer Science Engineering</option>
-                            <option value="Electronics">Electronics</option>
-                            <option value="Mechanical">Mechanical</option>
+                        <label for="branch">Branch</label>
+                        <select id="branch" name="branch" required>
+                            <option value="" disabled selected>Select Branch</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="Computer Engineering">Computer Engineering</option>
+                            <option value="Electronics Engineering">Electronics Engineering</option>
+                            <option value="EXTC">EXTC</option>
+                            <option value="Mechanical Engineering">Mechanical Engineering</option>
                         </select>
                     </div>
 
