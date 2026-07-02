@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Achivit') }}</title>
+        <title>{{ config('app.name', 'Achivit - Faculty') }}</title>
 
         <!-- Google Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,57 +18,55 @@
     <body class="bg-[#F8FAFC] text-[#1E293B] antialiased">
         <div class="app-layout">
             <!-- Sidebar -->
-            <aside class="sidebar">
+            <aside class="sidebar sidebar-faculty">
                 <!-- Logo Header -->
                 <div class="sidebar-logo">
-                    <a href="{{ route('dashboard') }}">
-                        <x-logo />
+                    <a href="{{ route('faculty.dashboard') }}">
+                        <x-logo theme="dark" />
                     </a>
+                    <!-- Faculty Portal eyebrow -->
+                    <span class="text-[10px] font-semibold text-[#64748B] uppercase tracking-[0.05em] block mt-1">FACULTY PORTAL</span>
                 </div>
 
                 <!-- Scrollable Nav List -->
                 <nav class="sidebar-nav">
-                    <!-- Main Menu Section -->
-                    <span class="text-[10px] font-bold text-[#94A3B8] uppercase tracking-[0.08em] px-5 py-2 block">Main Menu</span>
+                    <span class="text-[10px] font-bold text-[#64748B] uppercase tracking-[0.08em] px-5 py-2 block">Main Menu</span>
                     
-                    <a href="{{ route('dashboard') }}" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <a href="{{ route('faculty.dashboard') }}" class="nav-item {{ request()->routeIs('faculty.dashboard') ? 'active' : '' }}">
+                        <svg class="w-[18px] h-[18px] text-[#93C5FD]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
                         </svg>
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="{{ route('student.submit') }}" class="nav-item {{ request()->routeIs('student.submit') ? 'active' : '' }}">
-                        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                    <a href="{{ route('faculty.dashboard') }}?filter=pending" class="nav-item {{ request()->routeIs('faculty.review') ? 'active' : '' }}">
+                        <svg class="w-[18px] h-[18px] text-[#93C5FD]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                         </svg>
-                        <span>Submit Achievement</span>
+                        <span>Pending Reviews</span>
+                        <span class="nav-badge">8</span>
                     </a>
 
-                    <a href="{{ route('student.history') }}" class="nav-item {{ request()->routeIs('student.history') ? 'active' : '' }}">
-                        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    <a href="{{ route('faculty.dashboard') }}?filter=approved" class="nav-item">
+                        <svg class="w-[18px] h-[18px] text-[#93C5FD]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
                         </svg>
-                        <span>Achievement History</span>
-                        <span class="nav-badge">3</span>
+                        <span>Approved</span>
                     </a>
 
-                    <div class="h-px bg-[#E2E8F0] my-4 mx-5"></div>
+                    <a href="{{ route('faculty.dashboard') }}?filter=rejected" class="nav-item">
+                        <svg class="w-[18px] h-[18px] text-[#93C5FD]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        <span>Rejected</span>
+                    </a>
+
+                    <div class="h-px bg-slate-700 my-4 mx-5"></div>
 
                     <!-- Account Section -->
-                    <span class="text-[10px] font-bold text-[#94A3B8] uppercase tracking-[0.08em] px-5 py-2 block">Account</span>
+                    <span class="text-[10px] font-bold text-[#64748B] uppercase tracking-[0.08em] px-5 py-2 block">Account</span>
 
-                    <a href="{{ route('profile.edit') }}" class="nav-item {{ request()->routeIs('profile.edit') ? 'active' : '' }}">
-                        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
-                        <span>My Profile</span>
-                    </a>
-
-                    <form method="POST" action="{{ route('logout') }}" id="logout-form" class="hidden">
-                        @csrf
-                    </form>
-                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-item text-[#EF4444] hover:text-[#DC2626]">
+                    <a href="{{ route('faculty.login') }}" class="nav-item text-[#EF4444] hover:text-[#DC2626]">
                         <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                         </svg>
@@ -76,18 +74,16 @@
                     </a>
                 </nav>
 
-                <!-- Footer User Card -->
-                @auth
-                    <div class="sidebar-footer">
-                        <div class="flex items-center gap-3">
-                            <x-avatar initials="{{ strtoupper(substr(Auth::user()->name, 0, 2)) }}" color="blue-purple" />
-                            <div class="flex flex-col overflow-hidden">
-                                <span class="text-[13px] font-bold text-[#1E293B] truncate">{{ Auth::user()->name }}</span>
-                                <span class="text-[11px] text-[#64748B] font-semibold">Student</span>
-                            </div>
+                <!-- Footer Faculty Card -->
+                <div class="sidebar-footer">
+                    <div class="flex items-center gap-3">
+                        <x-avatar initials="PN" color="blue-purple" />
+                        <div class="flex flex-col overflow-hidden text-left">
+                            <span class="text-[13px] font-bold text-white truncate">Dr. Priya Nair</span>
+                            <span class="text-[11px] text-[#94A3B8] font-medium truncate">HOD — CS Dept.</span>
                         </div>
                     </div>
-                @endauth
+                </div>
             </aside>
 
             <!-- Main Content Area -->
@@ -99,7 +95,7 @@
                         @yield('top-bar-left')
                     </div>
 
-                    <!-- Right: Info Bell & Avatar -->
+                    <!-- Right: Date and Bell -->
                     <div class="flex items-center gap-4">
                         <span class="text-[13px] text-[#64748B] font-medium hidden md:inline">{{ date('d M Y') }}</span>
                         <!-- Bell icon -->
@@ -110,9 +106,7 @@
                             <!-- Red alert dot -->
                             <span class="absolute top-[2px] right-[2px] w-2.5 h-2.5 rounded-full bg-[#EF4444]"></span>
                         </button>
-                        @auth
-                            <x-avatar initials="{{ strtoupper(substr(Auth::user()->name, 0, 2)) }}" color="blue-purple" size="sm" />
-                        @endauth
+                        <x-avatar initials="PN" color="blue-purple" size="sm" />
                     </div>
                 </header>
 
