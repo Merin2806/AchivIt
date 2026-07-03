@@ -21,30 +21,34 @@
                         <input type="text" id="title" required placeholder="e.g. AWS Certified Solutions Architect">
                     </div>
 
-                    <!-- Category & Date (Two-col) -->
+                    <!-- Domain & Category (Two-col) -->
                     <div class="two-col">
                         <div class="form-group">
-                            <label for="category">Category *</label>
-                            <select id="category" required>
-                                <option value="" disabled selected>Select Category</option>
-                                <option value="Internship">🏢 Internship</option>
-                                <option value="Certificate">📜 Certificate</option>
-                                <option value="Competition">🏆 Competition</option>
-                                <option value="Paper Publication">📰 Paper Publication</option>
-                                <option value="Workshop/Seminar">🌐 Workshop/Seminar</option>
-                                <option value="Award/Recognition">🎖️ Award/Recognition</option>
+                            <label for="domain">Achievement Domain *</label>
+                            <select id="domain" name="domain" required>
+                                <option value="" disabled selected>Select Domain</option>
+                                <option value="Academic">📚 Academic</option>
+                                <option value="Extra-Curricular">🎨 Extra-Curricular</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="date">Date of Achievement *</label>
-                            <input type="date" id="date" required>
+                            <label for="category">Category *</label>
+                            <select id="category" name="category" required disabled>
+                                <option value="" disabled selected>Select Category</option>
+                            </select>
                         </div>
                     </div>
 
-                    <!-- Issuing Organisation -->
-                    <div class="form-group">
-                        <label for="issuer">Issuing Organisation</label>
-                        <input type="text" id="issuer" placeholder="e.g. Amazon Web Services (AWS)">
+                    <!-- Date & Issuing Organisation (Two-col) -->
+                    <div class="two-col">
+                        <div class="form-group">
+                            <label for="date">Date of Achievement *</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="issuer">Issuing Organisation</label>
+                            <input type="text" id="issuer" name="issuer" placeholder="e.g. Amazon Web Services (AWS)">
+                        </div>
                     </div>
 
                     <!-- Description -->
@@ -144,6 +148,7 @@
     <!-- Script to handle dynamic file selection display -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // File input upload styling toggle
             const fileInput = document.getElementById('file-input');
             if (fileInput) {
                 fileInput.addEventListener('change', function (e) {
@@ -170,6 +175,63 @@
                                 svg.classList.add('text-[#22C55E]');
                             }
                         }
+                    }
+                });
+            }
+
+            // Dynamic Category dropdown populating based on selected Domain
+            const domainSelect = document.getElementById('domain');
+            const categorySelect = document.getElementById('category');
+
+            const categories = {
+                'Academic': [
+                    { value: 'Internship', label: '🏢 Internship' },
+                    { value: 'Hackathon', label: '💻 Hackathon' },
+                    { value: 'Project', label: '🚀 Project' },
+                    { value: 'Research Paper', label: '📄 Research Paper' },
+                    { value: 'Seminar', label: '🎤 Seminar' },
+                    { value: 'Workshop', label: '🛠️ Workshop' },
+                    { value: 'Certification', label: '📜 Certification' },
+                    { value: 'Technical Competition', label: '🏆 Technical Competition' },
+                    { value: 'Patent', label: '💡 Patent' },
+                    { value: 'Publication', label: '📰 Publication' },
+                    { value: 'Training Program', label: '🎓 Training Program' }
+                ],
+                'Extra-Curricular': [
+                    { value: 'Sports', label: '⚽ Sports' },
+                    { value: 'Dance', label: '💃 Dance' },
+                    { value: 'Music', label: '🎵 Music' },
+                    { value: 'Drama', label: '🎭 Drama' },
+                    { value: 'Cultural Event', label: '🎪 Cultural Event' },
+                    { value: 'Art', label: '🎨 Art' },
+                    { value: 'Photography', label: '📷 Photography' },
+                    { value: 'Debate', label: '🗣️ Debate' },
+                    { value: 'Quiz', label: '❓ Quiz' },
+                    { value: 'NSS', label: '🌿 NSS' },
+                    { value: 'NCC', label: '🎖️ NCC' },
+                    { value: 'Volunteer Work', label: '🤝 Volunteer Work' },
+                    { value: 'Social Service', label: '🌍 Social Service' },
+                    { value: 'Other', label: '✨ Other' }
+                ]
+            };
+
+            if (domainSelect && categorySelect) {
+                domainSelect.addEventListener('change', function () {
+                    const selectedDomain = this.value;
+                    
+                    // Clear previous options except placeholder
+                    categorySelect.innerHTML = '<option value="" disabled selected>Select Category</option>';
+                    
+                    if (categories[selectedDomain]) {
+                        categories[selectedDomain].forEach(function (cat) {
+                            const option = document.createElement('option');
+                            option.value = cat.value;
+                            option.textContent = cat.label;
+                            categorySelect.appendChild(option);
+                        });
+                        categorySelect.disabled = false;
+                    } else {
+                        categorySelect.disabled = true;
                     }
                 });
             }

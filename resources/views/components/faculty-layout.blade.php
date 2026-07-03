@@ -1,3 +1,17 @@
+@php
+    $role = request('role', 'Academic Coordinator');
+    $dept = request('department', 'Information Technology');
+    $shortDept = match($dept) {
+        'Information Technology' => 'IT',
+        'Computer Engineering' => 'CE',
+        'EXTC' => 'EXTC',
+        'Electronics' => 'Electronics',
+        'Mechanical' => 'Mech',
+        default => $dept
+    };
+    $initials = $role === 'Student Activity Coordinator' ? 'RN' : 'PN';
+    $name = $role === 'Student Activity Coordinator' ? 'Dr. Rahul' : 'Dr. Priya';
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -21,7 +35,7 @@
             <aside class="sidebar sidebar-faculty">
                 <!-- Logo Header -->
                 <div class="sidebar-logo">
-                    <a href="{{ route('faculty.dashboard') }}">
+                    <a href="{{ route('faculty.dashboard', ['department' => $dept, 'role' => $role]) }}">
                         <x-logo theme="dark" />
                     </a>
                     <!-- Faculty Portal eyebrow -->
@@ -30,7 +44,7 @@
 
                 <!-- Scrollable Nav List -->
                 <nav class="sidebar-nav">
-                    <a href="{{ route('faculty.dashboard') }}" class="nav-item {{ request()->routeIs('faculty.dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('faculty.dashboard', ['department' => $dept, 'role' => $role]) }}" class="nav-item {{ request()->routeIs('faculty.dashboard') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] text-[#93C5FD]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
                         </svg>
@@ -48,10 +62,10 @@
                 <!-- Footer Faculty Card -->
                 <div class="sidebar-footer">
                     <div class="flex items-center gap-3">
-                        <x-avatar initials="PN" color="blue-purple" />
+                        <x-avatar initials="{{ $initials }}" color="blue-purple" />
                         <div class="flex flex-col overflow-hidden text-left">
-                            <span class="text-[13px] font-bold text-white truncate">Dr. Priya Nair</span>
-                            <span class="text-[11px] text-[#94A3B8] font-medium truncate">HOD — CS Dept.</span>
+                            <span class="text-[13px] font-bold text-white truncate">{{ $name }}</span>
+                            <span class="text-[11px] text-[#94A3B8] font-medium truncate">{{ $role === 'Student Activity Coordinator' ? 'SAC' : 'AC' }} — {{ $shortDept }} Dept.</span>
                         </div>
                     </div>
                 </div>
@@ -77,7 +91,7 @@
                             <!-- Red alert dot -->
                             <span class="absolute top-[2px] right-[2px] w-2.5 h-2.5 rounded-full bg-[#EF4444]"></span>
                         </button>
-                        <x-avatar initials="PN" color="blue-purple" size="sm" />
+                        <x-avatar initials="{{ $initials }}" color="blue-purple" size="sm" />
                     </div>
                 </header>
 

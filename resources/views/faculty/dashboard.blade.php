@@ -1,18 +1,135 @@
+@php
+    $role = request('role', 'Academic Coordinator');
+    $dept = request('department', 'Information Technology');
+    
+    if ($role === 'Student Activity Coordinator') {
+        $submissions = [
+            [
+                'student_name' => 'Merin Jose',
+                'roll_no' => '21CS047',
+                'initials' => 'MJ',
+                'color' => 'blue-purple',
+                'title' => 'Inter-College Football Tournament Winner',
+                'category' => 'Sports',
+                'domain' => 'Extra-Curricular',
+                'date' => '09 Jun 2025'
+            ],
+            [
+                'student_name' => 'Rahul Krishnan',
+                'roll_no' => '21CS082',
+                'initials' => 'RK',
+                'color' => 'green-emerald',
+                'title' => 'Annual Cultural Fest Solo Dance',
+                'category' => 'Dance',
+                'domain' => 'Extra-Curricular',
+                'date' => '08 Jun 2025'
+            ],
+            [
+                'student_name' => 'Sneha Nair',
+                'roll_no' => '21CS012',
+                'initials' => 'SN',
+                'color' => 'red-orange',
+                'title' => 'Street Play on Social Awareness',
+                'category' => 'Drama',
+                'domain' => 'Extra-Curricular',
+                'date' => '07 Jun 2025'
+            ],
+            [
+                'student_name' => 'Amit Shah',
+                'roll_no' => '21CS099',
+                'initials' => 'AS',
+                'color' => 'amber-orange',
+                'title' => 'NSS Blood Donation Camp Organizer',
+                'category' => 'NSS',
+                'domain' => 'Extra-Curricular',
+                'date' => '06 Jun 2025'
+            ],
+            [
+                'student_name' => 'Pooja Varma',
+                'roll_no' => '21CS005',
+                'initials' => 'PV',
+                'color' => 'cyan',
+                'title' => 'Photography Exhibition Best Portrait',
+                'category' => 'Photography',
+                'domain' => 'Extra-Curricular',
+                'date' => '05 Jun 2025'
+            ]
+        ];
+    } else {
+        $submissions = [
+            [
+                'student_name' => 'Merin Jose',
+                'roll_no' => '21CS047',
+                'initials' => 'MJ',
+                'color' => 'blue-purple',
+                'title' => 'Smart India Hackathon 2025 Winner',
+                'category' => 'Competition',
+                'domain' => 'Academic',
+                'date' => '09 Jun 2025'
+            ],
+            [
+                'student_name' => 'Rahul Krishnan',
+                'roll_no' => '21CS082',
+                'initials' => 'RK',
+                'color' => 'green-emerald',
+                'title' => 'IBM AI Applied Developer',
+                'category' => 'Certification',
+                'domain' => 'Academic',
+                'date' => '08 Jun 2025'
+            ],
+            [
+                'student_name' => 'Sneha Nair',
+                'roll_no' => '21CS012',
+                'initials' => 'SN',
+                'color' => 'red-orange',
+                'title' => 'React Native Frontend Internship',
+                'category' => 'Internship',
+                'domain' => 'Academic',
+                'date' => '07 Jun 2025'
+            ],
+            [
+                'student_name' => 'Amit Shah',
+                'roll_no' => '21CS099',
+                'initials' => 'AS',
+                'color' => 'amber-orange',
+                'title' => 'IEEE Blockchain Cloud Paper',
+                'category' => 'Publication',
+                'domain' => 'Academic',
+                'date' => '06 Jun 2025'
+            ],
+            [
+                'student_name' => 'Pooja Varma',
+                'roll_no' => '21CS005',
+                'initials' => 'PV',
+                'color' => 'cyan',
+                'title' => 'Python Django Certification',
+                'category' => 'Certification',
+                'domain' => 'Academic',
+                'date' => '05 Jun 2025'
+            ]
+        ];
+    }
+@endphp
 <x-faculty-layout>
     @section('top-bar-left')
-        <h2 class="text-[16px] font-extrabold text-[#1E293B] tracking-tight">Faculty Dashboard</h2>
+        <h2 class="text-[16px] font-extrabold text-[#1E293B] tracking-tight">
+            {{ $role === 'Student Activity Coordinator' ? 'Student Activity Coordinator Dashboard' : 'Academic Coordinator Dashboard' }}
+        </h2>
     @endsection
 
     <div class="max-w-[1200px] mx-auto text-left flex flex-col gap-6">
         <!-- Greeting Banner -->
         <div class="greeting-card bg-gradient-to-r from-[#1E293B] to-[#1D4ED8] shadow-[0_10px_30px_rgba(30,41,59,0.2)] flex flex-col md:flex-row justify-between items-center gap-6 p-[28px] md:px-[32px]">
             <div class="flex flex-col items-start text-left">
-                <h2 class="text-[20px] font-extrabold text-white tracking-tight mb-2 flex items-center gap-2">
-                    Welcome, Dr. Priya 👩‍🏫
+                <h2 class="text-[20px] font-extrabold text-white tracking-tight mb-1 flex items-center gap-2">
+                    Welcome, {{ $role === 'Student Activity Coordinator' ? 'Dr. Rahul' : 'Dr. Priya' }} 👋
                 </h2>
-                <p class="text-[14px] text-white/80 max-w-[500px]">
-                    You have <strong class="text-white">8 pending submissions</strong> awaiting your evaluation in the Computer Science department.
-                </p>
+                <div class="text-[14px] text-white/80 font-semibold mb-1">
+                    {{ $role === 'Student Activity Coordinator' ? 'Student Activity Coordinator' : 'Academic Coordinator' }}
+                </div>
+                <div class="text-[13px] text-white/70">
+                    {{ $dept }} Department
+                </div>
             </div>
             <!-- Large cap icon -->
             <div class="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center shrink-0 border border-white/10">
@@ -91,116 +208,39 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Row 1 -->
-                        <tr>
-                            <td>
-                                <div class="flex items-center gap-3">
-                                    <x-avatar initials="MJ" color="blue-purple" />
-                                    <div class="flex flex-col text-left">
-                                        <span class="font-bold text-[#1E293B] text-[13px]">Merin Jose</span>
-                                        <span class="text-[11px] text-[#64748B]">21CS047 • Sem 4</span>
+                        @foreach($submissions as $sub)
+                            <tr>
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        <x-avatar initials="{{ $sub['initials'] }}" color="{{ $sub['color'] }}" />
+                                        <div class="flex flex-col text-left">
+                                            <span class="font-bold text-[#1E293B] text-[13px]">{{ $sub['student_name'] }}</span>
+                                            <span class="text-[11px] text-[#64748B]">{{ $sub['roll_no'] }} • Sem 4</span>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td class="font-semibold text-[#1E293B]">Smart India Hackathon 2025</td>
-                            <td><span class="badge badge-blue">Competition</span></td>
-                            <td class="text-[#64748B]">09 Jun 2025</td>
-                            <td><span class="badge badge-pending">&#9203; Pending</span></td>
-                            <td>
-                                <a href="{{ route('faculty.review') }}" class="btn btn-primary btn-sm rounded-lg py-1 px-3 text-xs flex items-center gap-1">
-                                    <span>Review</span>
-                                    <span>&rarr;</span>
-                                </a>
-                            </td>
-                        </tr>
-                        <!-- Row 2 -->
-                        <tr>
-                            <td>
-                                <div class="flex items-center gap-3">
-                                    <x-avatar initials="RK" color="green-emerald" />
-                                    <div class="flex flex-col text-left">
-                                        <span class="font-bold text-[#1E293B] text-[13px]">Rahul Krishnan</span>
-                                        <span class="text-[11px] text-[#64748B]">21CS082 • Sem 4</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="font-semibold text-[#1E293B]">IBM AI Applied Developer</td>
-                            <td><span class="badge badge-blue">Certificate</span></td>
-                            <td class="text-[#64748B]">08 Jun 2025</td>
-                            <td><span class="badge badge-pending">&#9203; Pending</span></td>
-                            <td>
-                                <a href="{{ route('faculty.review') }}" class="btn btn-primary btn-sm rounded-lg py-1 px-3 text-xs flex items-center gap-1">
-                                    <span>Review</span>
-                                    <span>&rarr;</span>
-                                </a>
-                            </td>
-                        </tr>
-                        <!-- Row 3 -->
-                        <tr>
-                            <td>
-                                <div class="flex items-center gap-3">
-                                    <x-avatar initials="SN" color="red-orange" />
-                                    <div class="flex flex-col text-left">
-                                        <span class="font-bold text-[#1E293B] text-[13px]">Sneha Nair</span>
-                                        <span class="text-[11px] text-[#64748B]">21CS012 • Sem 4</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="font-semibold text-[#1E293B]">React Native Frontend Internship</td>
-                            <td><span class="badge badge-blue">Internship</span></td>
-                            <td class="text-[#64748B]">07 Jun 2025</td>
-                            <td><span class="badge badge-pending">&#9203; Pending</span></td>
-                            <td>
-                                <a href="{{ route('faculty.review') }}" class="btn btn-primary btn-sm rounded-lg py-1 px-3 text-xs flex items-center gap-1">
-                                    <span>Review</span>
-                                    <span>&rarr;</span>
-                                </a>
-                            </td>
-                        </tr>
-                        <!-- Row 4 -->
-                        <tr>
-                            <td>
-                                <div class="flex items-center gap-3">
-                                    <x-avatar initials="AS" color="amber-orange" />
-                                    <div class="flex flex-col text-left">
-                                        <span class="font-bold text-[#1E293B] text-[13px]">Amit Shah</span>
-                                        <span class="text-[11px] text-[#64748B]">21CS099 • Sem 4</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="font-semibold text-[#1E293B]">IEEE Blockchain Cloud Paper</td>
-                            <td><span class="badge badge-blue">Paper Publication</span></td>
-                            <td class="text-[#64748B]">06 Jun 2025</td>
-                            <td><span class="badge badge-pending">&#9203; Pending</span></td>
-                            <td>
-                                <a href="{{ route('faculty.review') }}" class="btn btn-primary btn-sm rounded-lg py-1 px-3 text-xs flex items-center gap-1">
-                                    <span>Review</span>
-                                    <span>&rarr;</span>
-                                </a>
-                            </td>
-                        </tr>
-                        <!-- Row 5 -->
-                        <tr>
-                            <td>
-                                <div class="flex items-center gap-3">
-                                    <x-avatar initials="PV" color="cyan" />
-                                    <div class="flex flex-col text-left">
-                                        <span class="font-bold text-[#1E293B] text-[13px]">Pooja Varma</span>
-                                        <span class="text-[11px] text-[#64748B]">21CS005 • Sem 4</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="font-semibold text-[#1E293B]">Python Django Certification</td>
-                            <td><span class="badge badge-blue">Certificate</span></td>
-                            <td class="text-[#64748B]">05 Jun 2025</td>
-                            <td><span class="badge badge-pending">&#9203; Pending</span></td>
-                            <td>
-                                <a href="{{ route('faculty.review') }}" class="btn btn-primary btn-sm rounded-lg py-1 px-3 text-xs flex items-center gap-1">
-                                    <span>Review</span>
-                                    <span>&rarr;</span>
-                                </a>
-                            </td>
-                        </tr>
+                                </td>
+                                <td class="font-semibold text-[#1E293B]">{{ $sub['title'] }}</td>
+                                <td><span class="badge badge-blue">{{ $sub['category'] }}</span></td>
+                                <td class="text-[#64748B]">{{ $sub['date'] }}</td>
+                                <td><span class="badge badge-pending">&#9203; Pending</span></td>
+                                <td>
+                                    <a href="{{ route('faculty.review', [
+                                        'department' => $dept,
+                                        'role' => $role,
+                                        'student_name' => $sub['student_name'],
+                                        'roll_no' => $sub['roll_no'],
+                                        'initials' => $sub['initials'],
+                                        'avatar_color' => $sub['color'],
+                                        'title' => $sub['title'],
+                                        'category' => $sub['category'],
+                                        'domain' => $sub['domain']
+                                    ]) }}" class="btn btn-primary btn-sm rounded-lg py-1 px-3 text-xs flex items-center gap-1">
+                                        <span>Review</span>
+                                        <span>&rarr;</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

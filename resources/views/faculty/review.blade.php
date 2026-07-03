@@ -1,6 +1,34 @@
+@php
+    $student_name = request('student_name', 'Merin Jose');
+    $roll_no = request('roll_no', '21CS047');
+    $initials = request('initials', 'MJ');
+    $avatar_color = request('avatar_color', 'blue-purple');
+    $title = request('title', 'Smart India Hackathon 2025 Winner');
+    $category = request('category', 'Competition');
+    $domain = request('domain', 'Academic');
+    
+    $dept = request('department', 'Information Technology');
+    $role = request('role', 'Academic Coordinator');
+
+    $descriptions = [
+        'Smart India Hackathon 2025 Winner' => 'Our team won 1st place in the National Smart India Hackathon 2025 under the Ministry of Education for the prototype software addressing smart waste management. The project utilized IoT triggers and predictive routing algorithms.',
+        'IBM AI Applied Developer' => 'Successfully completed the IBM AI Applied Developer professional certification. Learned key machine learning concepts, neural networks, and deployed models on IBM Cloud.',
+        'React Native Frontend Internship' => 'Worked as a Frontend Developer Intern for 3 months. Built key screens for a cross-platform mobile commerce application using React Native, Redux, and TailwindCSS.',
+        'IEEE Blockchain Cloud Paper' => 'Co-authored and presented a research paper titled "Decentralized Resource Allocation in Cloud Environments using Blockchain" at the IEEE International Conference.',
+        'Python Django Certification' => 'Completed an intensive 6-week training on Backend Development with Django. Built and deployed multiple RESTful APIs using Django REST Framework.',
+        'Inter-College Football Tournament Winner' => 'Represented the college football team and secured 1st place in the Inter-College Football Championship. Played as a forward and scored the winning goal in the finals.',
+        'Annual Cultural Fest Solo Dance' => 'Won the 2nd runner-up position in the Solo Classical Dance competition at the university level cultural festival, competing against 30+ colleges.',
+        'Street Play on Social Awareness' => 'Directed and performed in a street play (Nukkad Natak) highlighting environmental sustainability and waste segregation, organized in collaboration with local municipal authorities.',
+        'NSS Blood Donation Camp Organizer' => 'Successfully coordinated a blood donation camp in collaboration with the Red Cross Society, leading a team of 15 volunteers and collecting over 120 units of blood.',
+        'Photography Exhibition Best Portrait' => 'Received the "Best Portrait of the Year" award at the annual university photography exhibition for a street photography submission capturing local heritage.'
+    ];
+
+    $description = $descriptions[$title] ?? 'Successfully completed the activity and submitted the required documents for verification.';
+    $filename = str_replace(' ', '_', $title) . '_Certificate.pdf';
+@endphp
 <x-faculty-layout>
     @section('top-bar-left')
-        <a href="{{ route('faculty.dashboard') }}" class="btn btn-ghost btn-sm rounded-lg shrink-0">
+        <a href="{{ route('faculty.dashboard', ['department' => $dept, 'role' => $role]) }}" class="btn btn-ghost btn-sm rounded-lg shrink-0">
             <!-- Back Arrow icon -->
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -28,17 +56,41 @@
             <!-- Left Column: Student info, details, decision -->
             <div class="flex flex-col gap-4">
                 
+                <!-- Panel: Review Information -->
+                <div class="card-elevated p-6 flex flex-col">
+                    <span class="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider mb-4 block">Review Information</span>
+                    
+                    <div class="flex flex-col divide-y divide-[#E2E8F0] text-sm">
+                        <div class="py-3 flex justify-between">
+                            <span class="text-[#64748B] font-medium">Department</span>
+                            <span class="font-bold text-[#1E293B]">{{ $dept }}</span>
+                        </div>
+                        <div class="py-3 flex justify-between">
+                            <span class="text-[#64748B] font-medium">Reviewer Role</span>
+                            <span class="font-bold text-[#1E293B]">{{ $role }}</span>
+                        </div>
+                        <div class="py-3 flex justify-between">
+                            <span class="text-[#64748B] font-medium">Achievement Domain</span>
+                            <span class="font-bold text-[#1E293B]">{{ $domain }}</span>
+                        </div>
+                        <div class="py-3 flex justify-between">
+                            <span class="text-[#64748B] font-medium">Category</span>
+                            <span class="font-bold text-[#1E293B]">{{ $category }}</span>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Panel 1: Student Information -->
                 <div class="card-elevated p-6 flex flex-col">
                     <span class="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider mb-4 block">Student Information</span>
                     
                     <!-- Highlighted student summary row -->
                     <div class="flex items-center gap-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4 mb-4">
-                        <x-avatar initials="MJ" color="blue-purple" />
+                        <x-avatar initials="{{ $initials }}" color="{{ $avatar_color }}" />
                         <div class="flex flex-col text-left">
-                            <span class="text-base font-extrabold text-[#1E293B]">Merin Jose</span>
-                            <span class="text-xs text-[#64748B] font-semibold mt-0.5">Roll No: 21CS047 • Sem 4</span>
-                            <span class="text-[11px] text-[#94A3B8] font-bold uppercase mt-0.5 tracking-wider">Computer Science Department</span>
+                            <span class="text-base font-extrabold text-[#1E293B]">{{ $student_name }}</span>
+                            <span class="text-xs text-[#64748B] font-semibold mt-0.5">Roll No: {{ $roll_no }} • Sem 4</span>
+                            <span class="text-[11px] text-[#94A3B8] font-bold uppercase mt-0.5 tracking-wider">{{ $dept }} Department</span>
                         </div>
                     </div>
 
@@ -46,7 +98,9 @@
                     <div class="flex flex-col divide-y divide-[#E2E8F0] text-sm">
                         <div class="py-3 flex justify-between">
                             <span class="text-[#64748B] font-medium">Email Address</span>
-                            <span class="font-bold text-[#1E293B]">merin.jose@college.edu</span>
+                            <span class="font-bold text-[#1E293B]">
+                                {{ strtolower(str_replace(' ', '.', $student_name)) }}@college.edu
+                            </span>
                         </div>
                         <div class="py-3 flex justify-between">
                             <span class="text-[#64748B] font-medium">Phone Number</span>
@@ -70,11 +124,11 @@
                     <div class="flex flex-col divide-y divide-[#E2E8F0] text-sm mb-4">
                         <div class="py-3 flex justify-between items-start gap-4">
                             <span class="text-[#64748B] font-medium shrink-0">Title</span>
-                            <span class="font-bold text-[#1E293B] text-right">Smart India Hackathon 2025 Winner</span>
+                            <span class="font-bold text-[#1E293B] text-right">{{ $title }}</span>
                         </div>
                         <div class="py-3 flex justify-between">
                             <span class="text-[#64748B] font-medium">Category</span>
-                            <span class="badge badge-blue">Competition</span>
+                            <span class="badge badge-blue">{{ $category }}</span>
                         </div>
                         <div class="py-3 flex justify-between">
                             <span class="text-[#64748B] font-medium">Date of Achievement</span>
@@ -89,7 +143,7 @@
                     <div class="flex flex-col items-start">
                         <span class="text-xs font-bold text-[#64748B] mb-2">Description</span>
                         <div class="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-4 text-xs text-[#64748B] leading-relaxed text-left">
-                            Our team won 1st place in the National Smart India Hackathon 2025 under the Ministry of Education for the prototype software addressing smart waste management. The project utilized IoT triggers and predictive routing algorithms.
+                            {{ $description }}
                         </div>
                     </div>
                 </div>
@@ -99,6 +153,8 @@
                     <span class="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider mb-4 block">Your Decision</span>
                     
                     <form action="{{ route('faculty.dashboard') }}" method="GET" class="flex flex-col text-left">
+                        <input type="hidden" name="department" value="{{ $dept }}">
+                        <input type="hidden" name="role" value="{{ $role }}">
                         <div class="form-group">
                             <label for="remarks">Remarks / Feedback (Required for Rejection)</label>
                             <textarea id="remarks" rows="3" placeholder="Write review comments or reason for rejection..."></textarea>
@@ -155,7 +211,7 @@
                             <div class="flex items-center gap-2">
                                 <!-- Red PDF logo -->
                                 <span class="w-6 h-6 rounded bg-[#FEF2F2] border border-[#FEE2E2] flex items-center justify-center text-[#EF4444] text-[10px] font-extrabold">PDF</span>
-                                <span class="text-xs font-bold text-[#1E293B] truncate max-w-[180px]">SIH_Certificate_MerinJose.pdf</span>
+                                <span class="text-xs font-bold text-[#1E293B] truncate max-w-[180px]">{{ $filename }}</span>
                             </div>
                             <span class="text-[10px] text-[#64748B] font-semibold">Page 1 of 1</span>
                         </div>

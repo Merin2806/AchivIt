@@ -69,16 +69,26 @@
                         <input id="password" type="password" name="password" required placeholder="••••••••">
                     </div>
 
-                    <!-- Branch Dropdown -->
-                    <div class="form-group mb-6">
-                        <label for="branch">Branch</label>
-                        <select id="branch" name="branch" required>
-                            <option value="" disabled selected>Select Branch</option>
+                    <!-- Department Dropdown -->
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <select id="department" name="department" required>
+                            <option value="" disabled selected>Select Department</option>
                             <option value="Information Technology">Information Technology</option>
                             <option value="Computer Engineering">Computer Engineering</option>
-                            <option value="Electronics Engineering">Electronics Engineering</option>
                             <option value="EXTC">EXTC</option>
-                            <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Mechanical">Mechanical</option>
+                        </select>
+                    </div>
+
+                    <!-- Reviewer Role Dropdown -->
+                    <div class="form-group mb-6">
+                        <label for="role">Reviewer Role</label>
+                        <select id="role" name="role" required>
+                            <option value="" disabled selected>Select Reviewer Role</option>
+                            <option value="Academic Coordinator">Academic Coordinator</option>
+                            <option value="Student Activity Coordinator">Student Activity Coordinator</option>
                         </select>
                     </div>
 
