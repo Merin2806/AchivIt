@@ -1,6 +1,7 @@
 @php
-    $role = request('role', 'Academic Coordinator');
-    $dept = request('department', 'Information Technology');
+    $user = Auth::user();
+    $role = $user->faculty_role ?? 'Academic Coordinator';
+    $dept = $user->department->name ?? 'Information Technology';
     $shortDept = match($dept) {
         'Information Technology' => 'IT',
         'Computer Engineering' => 'CE',
@@ -9,8 +10,8 @@
         'Mechanical' => 'Mech',
         default => $dept
     };
-    $initials = $role === 'Student Activity Coordinator' ? 'RN' : 'PN';
-    $name = $role === 'Student Activity Coordinator' ? 'Dr. Rahul' : 'Dr. Priya';
+    $initials = strtoupper(substr($user->name, 0, 2));
+    $name = $user->name;
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -51,9 +52,14 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="{{ route('faculty.login') }}" class="nav-item text-[#EF4444] hover:text-[#DC2626]">
+                    <!-- Authentication -->
+                    <form method="POST" action="{{ route('logout') }}" id="logout-form-sidebar" style="display: none;">
+                        @csrf
+                    </form>
+                    <a href="{{ route('logout') }}" class="nav-item text-[#EF4444] hover:text-[#DC2626]"
+                       onclick="event.preventDefault(); document.getElementById('logout-form-sidebar').submit();">
                         <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013 3v1"/>
                         </svg>
                         <span>Logout</span>
                     </a>
@@ -73,6 +79,9 @@
 
             <!-- Main Content Area -->
             <div class="main-content">
+                <!-- Flash Messages -->
+                <x-flash-message />
+
                 <!-- Top Bar -->
                 <header class="top-bar">
                     <!-- Left: Page Title or Back buttons -->

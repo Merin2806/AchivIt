@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AchievementController;
 use Illuminate\Support\Facades\Route;
@@ -24,13 +25,10 @@ Route::middleware('auth')->group(function () {
 
     // Faculty Portal routes (protected by auth middleware)
     Route::group(['prefix' => 'faculty', 'as' => 'faculty.'], function () {
-        Route::get('/dashboard', function () {
-            return view('faculty.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [FacultyController::class, 'dashboard'])->name('dashboard');
 
-        Route::get('/review', function () {
-            return view('faculty.review');
-        })->name('review');
+        Route::get('/review', [FacultyController::class, 'review'])->name('review');
+        Route::post('/review/{id}', [FacultyController::class, 'processReview'])->name('review.submit');
     });
 });
 

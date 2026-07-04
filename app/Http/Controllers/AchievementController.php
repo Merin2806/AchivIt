@@ -17,7 +17,7 @@ class AchievementController extends Controller
      */
     public function index(): View
     {
-        $achievements = auth()->user()->achievements()->paginate(15);
+        $achievements = auth()->user()->achievements()->with('category')->latest()->paginate(10);
         return view('student.history', compact('achievements'));
     }
 

@@ -1,27 +1,49 @@
 @php
-    $student_name = request('student_name', 'Merin Jose');
-    $roll_no = request('roll_no', '21CS047');
-    $initials = request('initials', 'MJ');
-    $avatar_color = request('avatar_color', 'blue-purple');
-    $title = request('title', 'Smart India Hackathon 2025 Winner');
-    $category = request('category', 'Competition');
-    $domain = request('domain', 'Academic');
+    $student_name = $achievement->student->name;
+    $roll_no = $achievement->student->roll_no;
+    $initials = strtoupper(substr($student_name, 0, 2));
 
-    $descriptions = [
-        'Smart India Hackathon 2025 Winner' => 'Our team won 1st place in the National Smart India Hackathon 2025 under the Ministry of Education for the prototype software addressing smart waste management. The project utilized IoT triggers and predictive routing algorithms.',
-        'IBM AI Applied Developer' => 'Successfully completed the IBM AI Applied Developer professional certification. Learned key machine learning concepts, neural networks, and deployed models on IBM Cloud.',
-        'React Native Frontend Internship' => 'Worked as a Frontend Developer Intern for 3 months. Built key screens for a cross-platform mobile commerce application using React Native, Redux, and TailwindCSS.',
-        'IEEE Blockchain Cloud Paper' => 'Co-authored and presented a research paper titled "Decentralized Resource Allocation in Cloud Environments using Blockchain" at the IEEE International Conference.',
-        'Python Django Certification' => 'Completed an intensive 6-week training on Backend Development with Django. Built and deployed multiple RESTful APIs using Django REST Framework.',
-        'Inter-College Football Tournament Winner' => 'Represented the college football team and secured 1st place in the Inter-College Football Championship. Played as a forward and scored the winning goal in the finals.',
-        'Annual Cultural Fest Solo Dance' => 'Won the 2nd runner-up position in the Solo Classical Dance competition at the university level cultural festival, competing against 30+ colleges.',
-        'Street Play on Social Awareness' => 'Directed and performed in a street play (Nukkad Natak) highlighting environmental sustainability and waste segregation, organized in collaboration with local municipal authorities.',
-        'NSS Blood Donation Camp Organizer' => 'Successfully coordinated a blood donation camp in collaboration with the Red Cross Society, leading a team of 15 volunteers and collecting over 120 units of blood.',
-        'Photography Exhibition Best Portrait' => 'Received the "Best Portrait of the Year" award at the annual university photography exhibition for a street photography submission capturing local heritage.'
-    ];
+    $colors = ['blue-purple', 'green-emerald', 'red-orange', 'amber-orange', 'cyan'];
+    $avatar_color = $colors[$achievement->id % count($colors)];
 
-    $description = $descriptions[$title] ?? 'Successfully completed the activity and submitted the required documents for verification.';
-    $filename = str_replace(' ', '_', $title) . '_Certificate.pdf';
+    $title = $achievement->title;
+    $category = $achievement->category->category_name;
+    $domain = $achievement->category->domain;
+    $description = $achievement->description ?? 'Successfully completed the activity and submitted the required documents for verification.';
+    $filename = $achievement->certificate ? basename($achievement->certificate) : (str_replace(' ', '_', $title) . '_Certificate.pdf');
+
+    $dept = $achievement->student->department->name ?? 'Department';
+    $role = auth()->user()->faculty_role ?? 'Faculty';
+
+    $academicYear = '-';
+    if ($achievement->student->year) {
+        $yearNum = (int)$achievement->student->year;
+        $suffix = match($yearNum) {
+            1 => 'st',
+            2 => 'nd',
+            3 => 'rd',
+            4 => 'th',
+            default => ''
+        };
+        $academicYear = $yearNum . $suffix . ' Year';
+        if ($achievement->student->batch) {
+            $academicYear .= ' (' . $achievement->student->batch . ')';
+        }
+    }
+
+    $previousApprovalsCount = $achievement->student->achievements()->where('status', 'Approved')->count();
+
+    $pendingList = App\Models\Achievement::where('faculty_id', auth()->id())
+        ->where('status', 'Pending')
+        ->latest()
+        ->pluck('id')
+        ->toArray();
+    $currentIndex = array_search($achievement->id, $pendingList);
+    $totalPending = count($pendingList);
+    $currentPosition = $currentIndex !== false ? ($currentIndex + 1) : 1;
+    if ($currentIndex === false) {
+        $totalPending = $totalPending > 0 ? ($totalPending + 1) : 1;
+    }
 @endphp
 <x-faculty-layout>
     @section('top-bar-left')
@@ -40,10 +62,19 @@
         
         <!-- Utility row above layout -->
         <div class="flex justify-between items-center text-xs font-semibold text-[#64748B] mb-2">
-            <span>Reviewing <strong class="text-[#1E293B]">3 of 8</strong> pending submissions</span>
+            <span>Reviewing <strong class="text-[#1E293B]">{{ $currentPosition }} of {{ $totalPending }}</strong> pending submissions</span>
             <div class="flex gap-2">
-                <button class="btn btn-ghost btn-sm rounded-lg py-1 px-3 text-xs bg-white">&larr; Previous</button>
-                <button class="btn btn-ghost btn-sm rounded-lg py-1 px-3 text-xs bg-white">Next &rarr;</button>
+                @if($currentIndex !== false && $currentIndex > 0)
+                    <a href="{{ route('faculty.review', ['id' => $pendingList[$currentIndex - 1]]) }}" class="btn btn-ghost btn-sm rounded-lg py-1 px-3 text-xs bg-white flex items-center">&larr; Previous</a>
+                @else
+                    <button disabled class="btn btn-ghost btn-sm rounded-lg py-1 px-3 text-xs bg-white opacity-50 cursor-not-allowed">&larr; Previous</button>
+                @endif
+
+                @if($currentIndex !== false && $currentIndex < $totalPending - 1)
+                    <a href="{{ route('faculty.review', ['id' => $pendingList[$currentIndex + 1]]) }}" class="btn btn-ghost btn-sm rounded-lg py-1 px-3 text-xs bg-white flex items-center">Next &rarr;</a>
+                @else
+                    <button disabled class="btn btn-ghost btn-sm rounded-lg py-1 px-3 text-xs bg-white opacity-50 cursor-not-allowed">Next &rarr;</button>
+                @endif
             </div>
         </div>
 
@@ -86,7 +117,7 @@
                         <x-avatar initials="{{ $initials }}" color="{{ $avatar_color }}" />
                         <div class="flex flex-col text-left">
                             <span class="text-base font-extrabold text-[#1E293B]">{{ $student_name }}</span>
-                            <span class="text-xs text-[#64748B] font-semibold mt-0.5">Roll No: {{ $roll_no }} • Sem 4</span>
+                            <span class="text-xs text-[#64748B] font-semibold mt-0.5">Roll No: {{ $roll_no }} • Sem {{ $achievement->student->semester ?? 'N/A' }}</span>
                             <span class="text-[11px] text-[#94A3B8] font-bold uppercase mt-0.5 tracking-wider">{{ $dept }} Department</span>
                         </div>
                     </div>
@@ -96,20 +127,22 @@
                         <div class="py-3 flex justify-between">
                             <span class="text-[#64748B] font-medium">Email Address</span>
                             <span class="font-bold text-[#1E293B]">
-                                {{ strtolower(str_replace(' ', '.', $student_name)) }}@college.edu
+                                {{ $achievement->student->email ?? '-' }}
                             </span>
                         </div>
                         <div class="py-3 flex justify-between">
                             <span class="text-[#64748B] font-medium">Phone Number</span>
-                            <span class="font-bold text-[#1E293B]">+91 98765 43210</span>
+                            <span class="font-bold text-[#1E293B]">{{ $achievement->student->phone ?? '-' }}</span>
                         </div>
                         <div class="py-3 flex justify-between">
                             <span class="text-[#64748B] font-medium">Academic Year</span>
-                            <span class="font-bold text-[#1E293B]">2nd Year (2021 - 2025)</span>
+                            <span class="font-bold text-[#1E293B]">
+                                {{ $academicYear }}
+                            </span>
                         </div>
                         <div class="py-3 flex justify-between items-center">
                             <span class="text-[#64748B] font-medium">Previous Approvals</span>
-                            <span class="font-extrabold text-[#22C55E] bg-[#F0FDF4] px-2.5 py-0.5 rounded-full border border-[#DCFCE7] text-xs">7 approved</span>
+                            <span class="font-extrabold text-[#22C55E] bg-[#F0FDF4] px-2.5 py-0.5 rounded-full border border-[#DCFCE7] text-xs">{{ $previousApprovalsCount }} approved</span>
                         </div>
                     </div>
                 </div>
@@ -129,11 +162,11 @@
                         </div>
                         <div class="py-3 flex justify-between">
                             <span class="text-[#64748B] font-medium">Date of Achievement</span>
-                            <span class="font-bold text-[#1E293B]">05 Jun 2025</span>
+                            <span class="font-bold text-[#1E293B]">{{ $achievement->achievement_date->format('d M Y') }}</span>
                         </div>
                         <div class="py-3 flex justify-between">
                             <span class="text-[#64748B] font-medium">Submitted On</span>
-                            <span class="text-[#64748B] font-medium">09 Jun 2025, 10:24 AM</span>
+                            <span class="text-[#64748B] font-medium">{{ $achievement->created_at->format('d M Y, h:i A') }}</span>
                         </div>
                     </div>
 
@@ -149,12 +182,11 @@
                 <div class="card-elevated p-6 flex flex-col">
                     <span class="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider mb-4 block">Your Decision</span>
                     
-                    <form action="{{ route('faculty.dashboard') }}" method="GET" class="flex flex-col text-left">
-                        <input type="hidden" name="department" value="{{ $dept }}">
-                        <input type="hidden" name="role" value="{{ $role }}">
+                    <form action="{{ route('faculty.review.submit', $achievement->id) }}" method="POST" class="flex flex-col text-left">
+                        @csrf
                         <div class="form-group">
                             <label for="remarks">Remarks / Feedback (Required for Rejection)</label>
-                            <textarea id="remarks" rows="3" placeholder="Write review comments or reason for rejection..."></textarea>
+                            <textarea id="remarks" name="remark" rows="3" placeholder="Write review comments or reason for rejection...">{{ old('remark') }}</textarea>
                         </div>
 
                         <!-- 2-column actions -->
@@ -186,18 +218,33 @@
                         <span class="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider">Document Preview</span>
                         
                         <div class="flex gap-1.5">
-                            <button class="btn btn-ghost btn-sm rounded-lg p-1.5 text-xs bg-white shrink-0">
-                                <!-- Download icon -->
-                                <svg class="w-4 h-4 text-[#64748B]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                                </svg>
-                            </button>
-                            <button class="btn btn-ghost btn-sm rounded-lg p-1.5 text-xs bg-white shrink-0">
-                                <!-- Open External icon -->
-                                <svg class="w-4 h-4 text-[#64748B]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                                </svg>
-                            </button>
+                            @if($achievement->certificate)
+                                <a href="{{ asset('storage/'.$achievement->certificate) }}" download class="btn btn-ghost btn-sm rounded-lg p-1.5 text-xs bg-white shrink-0" title="Download Certificate">
+                                    <!-- Download icon -->
+                                    <svg class="w-4 h-4 text-[#64748B]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                    </svg>
+                                </a>
+                                <a href="{{ asset('storage/'.$achievement->certificate) }}" target="_blank" class="btn btn-ghost btn-sm rounded-lg p-1.5 text-xs bg-white shrink-0" title="View Certificate">
+                                    <!-- Open External icon -->
+                                    <svg class="w-4 h-4 text-[#64748B]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                    </svg>
+                                </a>
+                            @else
+                                <button disabled class="btn btn-ghost btn-sm rounded-lg p-1.5 text-xs bg-white shrink-0 opacity-50 cursor-not-allowed" title="No Certificate Uploaded">
+                                    <!-- Download icon -->
+                                    <svg class="w-4 h-4 text-[#64748B]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                    </svg>
+                                </button>
+                                <button disabled class="btn btn-ghost btn-sm rounded-lg p-1.5 text-xs bg-white shrink-0 opacity-50 cursor-not-allowed" title="No Certificate Uploaded">
+                                    <!-- Open External icon -->
+                                    <svg class="w-4 h-4 text-[#64748B]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                    </svg>
+                                </button>
+                            @endif
                         </div>
                     </div>
 
@@ -272,7 +319,7 @@
 
                     <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3.5 flex flex-col justify-center">
                         <span class="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider block mb-0.5">Uploaded On</span>
-                        <span class="text-xs font-bold text-[#1E293B]">09 Jun 2025</span>
+                        <span class="text-xs font-bold text-[#1E293B]">{{ $achievement->created_at->format('d M Y') }}</span>
                     </div>
 
                     <div class="bg-[#F0FDF4] border border-[#DCFCE7] rounded-xl p-3.5 flex flex-col justify-center text-[#22C55E]">

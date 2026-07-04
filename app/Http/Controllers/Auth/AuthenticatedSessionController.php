@@ -41,11 +41,17 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $isFaculty = $request->user() && $request->user()->role === 'faculty';
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+
+        if ($isFaculty) {
+            return redirect()->route('faculty.login');
+        }
 
         return redirect('/');
     }

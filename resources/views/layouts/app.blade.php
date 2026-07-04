@@ -50,7 +50,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         <span>Achievement History</span>
-                        <span class="nav-badge">3</span>
+                        @if(Auth::user()->achievements()->count() > 0)
+                            <span class="nav-badge">{{ Auth::user()->achievements()->count() }}</span>
+                        @endif
                     </a>
 
                     <div class="h-px bg-[#E2E8F0] my-4 mx-5"></div>

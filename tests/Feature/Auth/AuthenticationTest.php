@@ -39,3 +39,14 @@ test('users can logout', function () {
     $this->assertGuest();
     $response->assertRedirect('/');
 });
+
+test('faculty can logout and is redirected to faculty login page', function () {
+    $user = User::factory()->create([
+        'role' => 'faculty',
+    ]);
+
+    $response = $this->actingAs($user)->post('/logout');
+
+    $this->assertGuest();
+    $response->assertRedirect(route('faculty.login'));
+});

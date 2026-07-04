@@ -37,9 +37,14 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="{{ route('faculty.login') }}" class="nav-item text-[#EF4444] hover:text-[#DC2626]">
+                    <!-- Authentication -->
+                    <form method="POST" action="{{ route('logout') }}" id="logout-form-layout" style="display: none;">
+                        @csrf
+                    </form>
+                    <a href="{{ route('logout') }}" class="nav-item text-[#EF4444] hover:text-[#DC2626]"
+                       onclick="event.preventDefault(); document.getElementById('logout-form-layout').submit();">
                         <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013 3v1"/>
                         </svg>
                         <span>Logout</span>
                     </a>
@@ -48,10 +53,10 @@
                 <!-- Footer Faculty Card -->
                 <div class="sidebar-footer">
                     <div class="flex items-center gap-3">
-                        <x-avatar initials="PN" color="blue-purple" />
+                        <x-avatar initials="{{ strtoupper(substr(Auth::user()->name, 0, 2)) }}" color="blue-purple" />
                         <div class="flex flex-col overflow-hidden text-left">
-                            <span class="text-[13px] font-bold text-white truncate">Dr. Priya Nair</span>
-                            <span class="text-[11px] text-[#94A3B8] font-medium truncate">HOD — CS Dept.</span>
+                            <span class="text-[13px] font-bold text-white truncate">{{ Auth::user()->name }}</span>
+                            <span class="text-[11px] text-[#94A3B8] font-medium truncate">{{ Auth::user()->faculty_role ?? 'Faculty' }} — {{ Auth::user()->department->code ?? 'Dept' }}</span>
                         </div>
                     </div>
                 </div>
@@ -59,6 +64,9 @@
 
             <!-- Main Content Area -->
             <div class="main-content">
+                <!-- Flash Messages -->
+                <x-flash-message />
+
                 <!-- Top Bar -->
                 <header class="top-bar">
                     <!-- Left: Page Title or Back buttons -->

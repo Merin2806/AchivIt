@@ -1,116 +1,3 @@
-@php
-    $faculty = Auth::user();
-    $facultyRole = $faculty->faculty_role;
-    
-    // Filter submissions based on faculty role
-    if ($facultyRole === 'Student Activity Coordinator') {
-        $submissions = [
-            [
-                'student_name' => 'Merin Jose',
-                'roll_no' => '21CS047',
-                'initials' => 'MJ',
-                'color' => 'blue-purple',
-                'title' => 'Inter-College Football Tournament Winner',
-                'category' => 'Sports',
-                'domain' => 'Extra-Curricular',
-                'date' => '09 Jun 2025'
-            ],
-            [
-                'student_name' => 'Rahul Krishnan',
-                'roll_no' => '21CS082',
-                'initials' => 'RK',
-                'color' => 'green-emerald',
-                'title' => 'Annual Cultural Fest Solo Dance',
-                'category' => 'Dance',
-                'domain' => 'Extra-Curricular',
-                'date' => '08 Jun 2025'
-            ],
-            [
-                'student_name' => 'Sneha Nair',
-                'roll_no' => '21CS012',
-                'initials' => 'SN',
-                'color' => 'red-orange',
-                'title' => 'Street Play on Social Awareness',
-                'category' => 'Drama',
-                'domain' => 'Extra-Curricular',
-                'date' => '07 Jun 2025'
-            ],
-            [
-                'student_name' => 'Amit Shah',
-                'roll_no' => '21CS099',
-                'initials' => 'AS',
-                'color' => 'amber-orange',
-                'title' => 'NSS Blood Donation Camp Organizer',
-                'category' => 'NSS',
-                'domain' => 'Extra-Curricular',
-                'date' => '06 Jun 2025'
-            ],
-            [
-                'student_name' => 'Pooja Varma',
-                'roll_no' => '21CS005',
-                'initials' => 'PV',
-                'color' => 'cyan',
-                'title' => 'Photography Exhibition Best Portrait',
-                'category' => 'Photography',
-                'domain' => 'Extra-Curricular',
-                'date' => '05 Jun 2025'
-            ]
-        ];
-    } else {
-        $submissions = [
-            [
-                'student_name' => 'Merin Jose',
-                'roll_no' => '21CS047',
-                'initials' => 'MJ',
-                'color' => 'blue-purple',
-                'title' => 'Smart India Hackathon 2025 Winner',
-                'category' => 'Competition',
-                'domain' => 'Academic',
-                'date' => '09 Jun 2025'
-            ],
-            [
-                'student_name' => 'Rahul Krishnan',
-                'roll_no' => '21CS082',
-                'initials' => 'RK',
-                'color' => 'green-emerald',
-                'title' => 'IBM AI Applied Developer',
-                'category' => 'Certification',
-                'domain' => 'Academic',
-                'date' => '08 Jun 2025'
-            ],
-            [
-                'student_name' => 'Sneha Nair',
-                'roll_no' => '21CS012',
-                'initials' => 'SN',
-                'color' => 'red-orange',
-                'title' => 'React Native Frontend Internship',
-                'category' => 'Internship',
-                'domain' => 'Academic',
-                'date' => '07 Jun 2025'
-            ],
-            [
-                'student_name' => 'Amit Shah',
-                'roll_no' => '21CS099',
-                'initials' => 'AS',
-                'color' => 'amber-orange',
-                'title' => 'IEEE Blockchain Cloud Paper',
-                'category' => 'Publication',
-                'domain' => 'Academic',
-                'date' => '06 Jun 2025'
-            ],
-            [
-                'student_name' => 'Pooja Varma',
-                'roll_no' => '21CS005',
-                'initials' => 'PV',
-                'color' => 'cyan',
-                'title' => 'Python Django Certification',
-                'category' => 'Certification',
-                'domain' => 'Academic',
-                'date' => '05 Jun 2025'
-            ]
-        ];
-    }
-@endphp
 <x-faculty-layout>
     @section('top-bar-left')
         <h2 class="text-[16px] font-extrabold text-[#1E293B] tracking-tight">
@@ -142,7 +29,7 @@
 
         <!-- 3-Column Stats Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <x-stat-card color="amber" number="8" label="Pending Reviews">
+            <x-stat-card color="amber" number="{{ $pendingCount }}" label="Pending Reviews">
                 <x-slot name="icon">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -150,7 +37,7 @@
                 </x-slot>
             </x-stat-card>
 
-            <x-stat-card color="green" number="14" label="Approved Today">
+            <x-stat-card color="green" number="{{ $approvedCount }}" label="Approved Today">
                 <x-slot name="icon">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
@@ -158,7 +45,7 @@
                 </x-slot>
             </x-stat-card>
 
-            <x-stat-card color="red" number="3" label="Rejected">
+            <x-stat-card color="red" number="{{ $rejectedCount }}" label="Rejected">
                 <x-slot name="icon">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -172,7 +59,7 @@
             <div class="table-header flex-col sm:flex-row gap-4">
                 <div class="flex flex-col text-left">
                     <h3 class="text-base font-bold text-[#1E293B]">Pending Submissions</h3>
-                    <p class="text-xs text-[#64748B] mt-0.5">8 achievements awaiting your review</p>
+                    <p class="text-xs text-[#64748B] mt-0.5">{{ $pendingCount }} achievements awaiting your review</p>
                 </div>
                 
                 <!-- Table controls -->
@@ -209,50 +96,46 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($submissions as $sub)
+                        @forelse($pendingAchievements as $achievement)
+                            @php
+                                $colors = ['blue-purple', 'green-emerald', 'red-orange', 'amber-orange', 'cyan'];
+                                $avatarColor = $colors[$achievement->id % count($colors)];
+                            @endphp
                             <tr>
                                 <td>
                                     <div class="flex items-center gap-3">
-                                        <x-avatar initials="{{ $sub['initials'] }}" color="{{ $sub['color'] }}" />
+                                        <x-avatar initials="{{ strtoupper(substr($achievement->student->name, 0, 2)) }}" color="{{ $avatarColor }}" />
                                         <div class="flex flex-col text-left">
-                                            <span class="font-bold text-[#1E293B] text-[13px]">{{ $sub['student_name'] }}</span>
-                                            <span class="text-[11px] text-[#64748B]">{{ $sub['roll_no'] }} • Sem 4</span>
+                                            <span class="font-bold text-[#1E293B] text-[13px]">{{ $achievement->student->name }}</span>
+                                            <span class="text-[11px] text-[#64748B]">{{ $achievement->student->roll_no }} • Sem {{ $achievement->student->semester }}</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="font-semibold text-[#1E293B]">{{ $sub['title'] }}</td>
-                                <td><span class="badge badge-blue">{{ $sub['category'] }}</span></td>
-                                <td class="text-[#64748B]">{{ $sub['date'] }}</td>
-                                <td><span class="badge badge-pending">&#9203; Pending</span></td>
+                                <td class="font-semibold text-[#1E293B]">{{ $achievement->title }}</td>
+                                <td><span class="badge badge-blue">{{ $achievement->category->category_name }}</span></td>
+                                <td class="text-[#64748B]">{{ $achievement->achievement_date->format('d M Y') }}</td>
+                                <td><span class="badge badge-pending">&#9203; {{ $achievement->status }}</span></td>
                                 <td>
-                                    <a href="{{ route('faculty.review') }}" class="btn btn-primary btn-sm rounded-lg py-1 px-3 text-xs flex items-center gap-1">
+                                    <a href="{{ route('faculty.review', ['id' => $achievement->id]) }}" class="btn btn-primary btn-sm rounded-lg py-1 px-3 text-xs flex items-center gap-1">
                                         <span>Review</span>
                                         <span>&rarr;</span>
                                     </a>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center py-10 text-gray-500">
+                                    No pending submissions.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
 
             <!-- Pagination Footer -->
             <div class="pagination">
-                <span class="text-xs font-semibold text-[#64748B]">Showing 1–5 of 8</span>
-                <div class="flex gap-1.5">
-                    <button class="page-btn">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
-                        </svg>
-                    </button>
-                    <button class="page-btn active">1</button>
-                    <button class="page-btn">2</button>
-                    <button class="page-btn">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </button>
-                </div>
+                {{ $pendingAchievements->links() }}
             </div>
         </div>
     </div>
