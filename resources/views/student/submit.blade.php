@@ -80,30 +80,7 @@
                         </div>
                         <x-input-error class="mt-2" :messages="$errors->get('certificate')" />
                     </div>
-                        </div>
-                    </div>
 
-                    <!-- Description -->
-                    <div class="form-group">
-                        <label for="description">Description *</label>
-                        <textarea id="description" required rows="4" placeholder="Briefly describe what you did, skills learned, or achievements made..."></textarea>
-                    </div>
-
-                    <!-- File Dropzone -->
-                    <div class="form-group">
-                        <label>Upload Proof Document *</label>
-                        <div class="upload-zone" onclick="document.getElementById('file-input').click()">
-                            <input type="file" id="file-input" class="hidden" required>
-                            
-                            <!-- Cloud Upload icon -->
-                            <svg class="w-10 h-10 text-[#94A3B8] mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                            </svg>
-                            <span class="text-sm font-bold text-[#1E293B] mb-1">Drag & drop your file here</span>
-                            <span class="text-xs text-[#64748B] mb-3">Supports PDF, JPG, PNG — max 5 MB</span>
-                            <button type="button" class="btn btn-ghost btn-sm rounded-lg">Browse Files</button>
-                        </div>
-                    </div>
 
                     <div class="h-px bg-[#E2E8F0] my-6"></div>
 

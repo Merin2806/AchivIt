@@ -1,8 +1,16 @@
 @php
-    $totalSubmitted = Auth::user()->achievements()->count();
-    $pendingCount = Auth::user()->achievements()->where('status', 'Pending')->count();
-    $approvedCount = Auth::user()->achievements()->where('status', 'Approved')->count();
-    $rejectedCount = Auth::user()->achievements()->where('status', 'Rejected')->count();
+$user = Auth::user();
+
+$totalSubmitted = $user->achievements()->count();
+$pendingCount = $user->achievements()->where('status', 'Pending')->count();
+$approvedCount = $user->achievements()->where('status', 'Approved')->count();
+$rejectedCount = $user->achievements()->where('status', 'Rejected')->count();
+
+$recentAchievements = $user->achievements()
+    ->with('category')
+    ->latest()
+    ->take(5)
+    ->get();
 @endphp
 
 <!-- Greeting Banner -->
@@ -13,11 +21,11 @@
             Welcome, {{ explode(' ', Auth::user()->name)[0] }} 👋
         </h2>
         <p class="text-[14px] text-white/80 mb-6 max-w-[500px]">
-            @if($pendingCount > 0)
-                You have {{ $pendingCount }} submission@if($pendingCount != 1)s@endif pending review by faculty advisors. Keep up the great work!
-            @else
-                You have no pending submissions. Great job!
-            @endif
+             @if($pendingCount > 0)
+                 You have {{ $pendingCount }} {{ $pendingCount == 1 ? 'submission' : 'submissions' }} pending review by faculty advisors. Keep up the great work!
+             @else
+                 You have no pending submissions. Great job!
+             @endif
         </p>
         <div class="flex flex-wrap gap-4 text-[13px] text-white/70 font-semibold">
             <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 rounded-full">
@@ -146,42 +154,70 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="font-semibold text-[#1E293B]">AWS Cloud Practitioner</td>
-                    <td><span class="badge badge-blue">Certificate</span></td>
-                    <td class="text-[#64748B]">12 Jun 2025</td>
-                    <td><span class="badge badge-success">&#10003; Approved</span></td>
-                    <td class="text-[#64748B] text-xs">Verified & approved</td>
-                </tr>
-                <tr>
-                    <td class="font-semibold text-[#1E293B]">Smart India Hackathon Finalist</td>
-                    <td><span class="badge badge-blue">Competition</span></td>
-                    <td class="text-[#64748B]">08 Jun 2025</td>
-                    <td><span class="badge badge-pending">&#9203; Pending</span></td>
-                    <td class="text-[#94A3B8] text-xs italic">Awaiting review</td>
-                </tr>
-                <tr>
-                    <td class="font-semibold text-[#1E293B]">React Native App Internship</td>
-                    <td><span class="badge badge-blue">Internship</span></td>
-                    <td class="text-[#64748B]">30 May 2025</td>
-                    <td><span class="badge badge-success">&#10003; Approved</span></td>
-                    <td class="text-[#64748B] text-xs">Internship completed successfully</td>
-                </tr>
-                <tr>
-                    <td class="font-semibold text-[#1E293B]">Machine Learning Workshop</td>
-                    <td><span class="badge badge-blue">Workshop/Seminar</span></td>
-                    <td class="text-[#64748B]">24 May 2025</td>
-                    <td><span class="badge badge-rejected">&#10005; Rejected</span></td>
-                    <td class="text-[#EF4444] text-xs font-medium">Invalid certificate document</td>
-                </tr>
-                <tr>
-                    <td class="font-semibold text-[#1E293B]">IEEE Blockchain Paper</td>
-                    <td><span class="badge badge-blue">Paper Publication</span></td>
-                    <td class="text-[#64748B]">10 May 2025</td>
-                    <td><span class="badge badge-success">&#10003; Approved</span></td>
-                    <td class="text-[#64748B] text-xs">Paper successfully verified</td>
-                </tr>
-            </tbody>
+            @forelse(Auth::user()->achievements()->with('category')->latest()->take(5)->get() as $achievement)
+
+            <tr>
+
+               <td class="font-semibold text-[#1E293B]">
+                   {{ $achievement->title }}
+               </td>
+
+               <td>
+                  <span class="badge badge-blue">
+                      {{ $achievement->category->category_name ?? 'N/A' }}
+                  </span>
+               </td>
+
+               <td class="text-[#64748B]">
+                   {{ $achievement->achievement_date->format('d M Y') }}
+               </td>
+
+               <td>
+
+                   @if($achievement->status=='Approved')
+
+                       <span class="badge badge-success">
+                           ✓ Approved
+                       </span>
+
+                   @elseif($achievement->status=='Pending')
+
+                       <span class="badge badge-pending">
+                           ⌛ Pending
+                       </span>
+      
+                   @else
+
+                       <span class="badge badge-rejected">
+                          ✕ Rejected
+                       </span>
+
+                   @endif
+
+               </td>
+
+               <td class="text-[#64748B] text-xs">
+
+                   {{ $achievement->remark ?? '-' }}
+
+               </td>
+
+           </tr>
+
+           @empty
+
+           <tr>
+
+              <td colspan="5" class="text-center py-10 text-gray-500">
+
+                  No achievements submitted yet.
+
+              </td>
+
+           </tr>
+
+           @endforelse
+           </tbody>
         </table>
     </div>
 </div>

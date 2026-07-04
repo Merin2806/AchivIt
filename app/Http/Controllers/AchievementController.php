@@ -34,13 +34,13 @@ class AchievementController extends Controller
      * Store a newly created achievement in storage.
      */
     public function store(StoreAchievementRequest $request): RedirectResponse
-    {
+    {   
         // Get the authenticated student
         $student = auth()->user();
-
+        
         // Retrieve the category to get the domain
         $category = Category::findOrFail($request->category_id);
-
+        
         // Get student's department
         $departmentId = $student->department_id;
 
@@ -48,15 +48,16 @@ class AchievementController extends Controller
         $facultyAssignment = FacultyAssignment::where('department_id', $departmentId)
             ->where('domain', $category->domain)
             ->first();
-
+    
         $facultyId = $facultyAssignment?->faculty_id;
-
+        
         // Handle file upload
         $certificatePath = null;
         if ($request->hasFile('certificate')) {
             $file = $request->file('certificate');
             $fileName = time() . '_' . $student->id . '_' . $file->getClientOriginalName();
             $certificatePath = $file->storeAs('achievements', $fileName, 'public');
+ 
         }
 
         // Create the achievement record
@@ -73,6 +74,7 @@ class AchievementController extends Controller
             'remark' => null,
             'reviewed_at' => null,
         ]);
+    
 
         return redirect()->route('dashboard')
             ->with('success', 'Achievement submitted successfully and sent to your faculty advisor.');

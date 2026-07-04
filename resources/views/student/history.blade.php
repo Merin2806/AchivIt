@@ -23,7 +23,7 @@
         <div class="table-container">
             <!-- Row 1: Header title & controls -->
             <div class="table-header flex-col sm:flex-row gap-4">
-                <span class="text-base font-bold text-[#1E293B] shrink-0">12 Achievements</span>
+                <span class="text-base font-bold text-[#1E293B] shrink-0">{{ $achievements->total() }} Achievements</span>
                 
                 <!-- Table Search & select filter -->
                 <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto sm:justify-end">
@@ -51,10 +51,10 @@
 
             <!-- Row 2: Filter row pills (visual toggle only) -->
             <div class="filter-row flex-wrap">
-                <button class="filter-btn active">All (12)</button>
-                <button class="filter-btn">Approved (7)</button>
-                <button class="filter-btn">Pending (3)</button>
-                <button class="filter-btn">Rejected (2)</button>
+                <button class="filter-btn active">All ({{ auth()->user()->achievements()->count() }})</button>
+                <button class="filter-btn">Approved ({{ auth()->user()->achievements()->where('status', 'Approved')->count() }})</button>
+                <button class="filter-btn">Pending ({{ auth()->user()->achievements()->where('status', 'Pending')->count() }})</button>
+                <button class="filter-btn">Rejected ({{ auth()->user()->achievements()->where('status', 'Rejected')->count() }})</button>
             </div>
 
             <!-- Table content -->
@@ -71,123 +71,59 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Row 1 -->
+                    @forelse($achievements as $achievement)
                         <tr>
-                            <td class="font-semibold text-[#1E293B]">AWS Cloud Practitioner</td>
-                            <td><span class="badge badge-blue">Certificate</span></td>
-                            <td class="text-[#64748B]">12 Jun 2025</td>
-                            <td><span class="badge badge-success">&#10003; Approved</span></td>
-                            <td class="text-[#64748B] text-xs">Verified & approved</td>
+                            <td class="font-semibold text-[#1E293B]">{{ $achievement->title }}</td>
+                            <td><span class="badge badge-blue">{{ $achievement->category->category_name ?? 'N/A' }}</span></td>
+                            <td class="text-[#64748B]">{{ $achievement->achievement_date->format('d M Y') }}</td>
                             <td>
-                                <a href="#" class="text-[#2563EB] hover:underline flex items-center gap-1 font-semibold text-xs">
-                                    <span>👁 View</span>
-                                </a>
+                                @if($achievement->status === 'Approved')
+                                    <span class="badge badge-success">&#10003; Approved</span>
+                                @elseif($achievement->status === 'Pending')
+                                    <span class="badge badge-pending">&#9203; Pending</span>
+                                @elseif($achievement->status === 'Rejected')
+                                    <span class="badge badge-rejected">&#10005; Rejected</span>
+                                @endif
+                            </td>
+                            @if($achievement->status === 'Rejected' && $achievement->remark)
+                                <td class="text-[#EF4444] text-xs font-semibold bg-[#FEF2F2] px-2 py-0.5 rounded border border-[#FEE2E2] inline-block">
+                                    {{ $achievement->remark }}
+                                </td>
+                            @elseif($achievement->status === 'Pending' && !$achievement->remark)
+                                <td class="text-[#94A3B8] text-xs italic">-</td>
+                            @elseif($achievement->remark)
+                                <td class="text-[#64748B] text-xs">
+                                    {{ $achievement->remark }}
+                                </td>
+                            @else
+                                <td class="text-[#64748B] text-xs">-</td>
+                            @endif
+                            <td>
+                                @if($achievement->certificate)
+                                    <a href="/storage/{{ $achievement->certificate }}" target="_blank" class="text-[#2563EB] hover:underline flex items-center gap-1 font-semibold text-xs">
+                                        <span>👁 View</span>
+                                    </a>
+                                @else
+                                    <span class="text-[#94A3B8] flex items-center gap-1 font-semibold text-xs cursor-not-allowed">
+                                        <span>👁 View</span>
+                                    </span>
+                                @endif
                             </td>
                         </tr>
-                        <!-- Row 2 -->
+                    @empty
                         <tr>
-                            <td class="font-semibold text-[#1E293B]">Smart India Hackathon Finalist</td>
-                            <td><span class="badge badge-blue">Competition</span></td>
-                            <td class="text-[#64748B]">08 Jun 2025</td>
-                            <td><span class="badge badge-pending">&#9203; Pending</span></td>
-                            <td class="text-[#94A3B8] text-xs italic">Awaiting review</td>
-                            <td>
-                                <a href="#" class="text-[#2563EB] hover:underline flex items-center gap-1 font-semibold text-xs">
-                                    <span>👁 View</span>
-                                </a>
+                            <td colspan="6" class="text-center py-10 text-gray-500">
+                                No achievements submitted yet.
                             </td>
                         </tr>
-                        <!-- Row 3 -->
-                        <tr>
-                            <td class="font-semibold text-[#1E293B]">React Native App Internship</td>
-                            <td><span class="badge badge-blue">Internship</span></td>
-                            <td class="text-[#64748B]">30 May 2025</td>
-                            <td><span class="badge badge-success">&#10003; Approved</span></td>
-                            <td class="text-[#64748B] text-xs">Internship completed successfully</td>
-                            <td>
-                                <a href="#" class="text-[#2563EB] hover:underline flex items-center gap-1 font-semibold text-xs">
-                                    <span>👁 View</span>
-                                </a>
-                            </td>
-                        </tr>
-                        <!-- Row 4 -->
-                        <tr>
-                            <td class="font-semibold text-[#1E293B]">Machine Learning Workshop</td>
-                            <td><span class="badge badge-blue">Workshop/Seminar</span></td>
-                            <td class="text-[#64748B]">24 May 2025</td>
-                            <td><span class="badge badge-rejected">&#10005; Rejected</span></td>
-                            <td class="text-[#EF4444] text-xs font-semibold bg-[#FEF2F2] px-2 py-0.5 rounded border border-[#FEE2E2] inline-block">Invalid certificate document</td>
-                            <td>
-                                <a href="#" class="text-[#2563EB] hover:underline flex items-center gap-1 font-semibold text-xs">
-                                    <span>👁 View</span>
-                                </a>
-                            </td>
-                        </tr>
-                        <!-- Row 5 -->
-                        <tr>
-                            <td class="font-semibold text-[#1E293B]">IEEE Blockchain Paper</td>
-                            <td><span class="badge badge-blue">Paper Publication</span></td>
-                            <td class="text-[#64748B]">10 May 2025</td>
-                            <td><span class="badge badge-success">&#10003; Approved</span></td>
-                            <td class="text-[#64748B] text-xs">Paper successfully verified</td>
-                            <td>
-                                <a href="#" class="text-[#2563EB] hover:underline flex items-center gap-1 font-semibold text-xs">
-                                    <span>👁 View</span>
-                                </a>
-                            </td>
-                        </tr>
-                        <!-- Row 6 -->
-                        <tr>
-                            <td class="font-semibold text-[#1E293B]">Google Summer of Code</td>
-                            <td><span class="badge badge-blue">Internship</span></td>
-                            <td class="text-[#64748B]">05 May 2025</td>
-                            <td><span class="badge badge-pending">&#9203; Pending</span></td>
-                            <td class="text-[#94A3B8] text-xs italic">Awaiting review</td>
-                            <td>
-                                <a href="#" class="text-[#2563EB] hover:underline flex items-center gap-1 font-semibold text-xs">
-                                    <span>👁 View</span>
-                                </a>
-                            </td>
-                        </tr>
-                        <!-- Row 7 -->
-                        <tr>
-                            <td class="font-semibold text-[#1E293B]">Best CSE Student Award</td>
-                            <td><span class="badge badge-blue">Award/Recognition</span></td>
-                            <td class="text-[#64748B]">28 Apr 2025</td>
-                            <td><span class="badge badge-success">&#10003; Approved</span></td>
-                            <td class="text-[#64748B] text-xs">Congratulations on this college recognition!</td>
-                            <td>
-                                <a href="#" class="text-[#2563EB] hover:underline flex items-center gap-1 font-semibold text-xs">
-                                    <span>👁 View</span>
-                                </a>
-                            </td>
-                        </tr>
+                    @endforelse
                     </tbody>
                 </table>
             </div>
 
             <!-- Pagination Footer -->
             <div class="pagination">
-                <span class="text-xs font-semibold text-[#64748B]">Showing 1–7 of 12</span>
-                
-                <div class="flex gap-1.5">
-                    <!-- Prev -->
-                    <button class="page-btn">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
-                        </svg>
-                    </button>
-                    <!-- Page 1 (Active) -->
-                    <button class="page-btn active">1</button>
-                    <!-- Page 2 -->
-                    <button class="page-btn">2</button>
-                    <!-- Next -->
-                    <button class="page-btn">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </button>
-                </div>
+                {{ $achievements->links() }}
             </div>
         </div>
     </div>
