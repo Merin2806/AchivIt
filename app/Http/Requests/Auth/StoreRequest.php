@@ -1,37 +1,34 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use App\Models\User;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules;
 
-class ProfileUpdateRequest extends FormRequest
+class StoreRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array<mixed>|string>
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                Rule::unique(User::class)->ignore($this->user()->id),
-            ],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'phone' => ['required', 'string', 'regex:/^[0-9]{10}$/', 'max:15'],
-            'roll_no' => [
-                'required',
-                'string',
-                Rule::unique(User::class)->ignore($this->user()->id),
-            ],
+            'roll_no' => ['required', 'string', 'unique:users,roll_no'],
             'department_id' => ['required', 'integer', 'exists:departments,id'],
             'year' => ['required', 'integer', 'between:1,4'],
             'semester' => ['required', 'integer', 'between:1,8'],
@@ -48,7 +45,7 @@ class ProfileUpdateRequest extends FormRequest
             'phone.regex' => 'The phone number must be exactly 10 digits.',
             'phone.required' => 'Phone number is required.',
             'roll_no.required' => 'Roll number is required.',
-            'roll_no.unique' => 'This roll number is already in use.',
+            'roll_no.unique' => 'This roll number is already registered.',
             'department_id.required' => 'Please select a department.',
             'department_id.exists' => 'The selected department is invalid.',
             'year.required' => 'Academic year is required.',

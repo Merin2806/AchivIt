@@ -44,7 +44,7 @@
                     <!-- College Email -->
                     <div class="form-group">
                         <label for="email">College Email Address</label>
-                        <input id="email" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="e.g. merin.joys@college.edu">
+                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username" placeholder="e.g. merin.joys@college.edu">
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
@@ -52,11 +52,11 @@
                     <div class="two-col">
                         <div class="form-group">
                             <label for="roll_number">Roll Number</label>
-                            <input id="roll_number" name="roll_number" type="text" placeholder="21CS047" required>
+                            <input id="roll_no" name="roll_no" type="text" placeholder="21CS047" required>
                         </div>
                         <div class="form-group">
                             <label for="phone_number">Phone Number</label>
-                            <input id="phone_number" name="phone_number" type="text" placeholder="e.g. 9876543210" required>
+                            <input id="phone" name="phone" type="text" placeholder="e.g. 9876543210" required>
                         </div>
                     </div>
 
@@ -64,13 +64,14 @@
                     <div class="two-col">
                         <div class="form-group">
                             <label for="branch">Branch</label>
-                            <select id="branch" name="branch" required>
-                                <option value="" disabled selected>Select Branch</option>
-                                <option value="Information Technology">Information Technology</option>
-                                <option value="Computer Engineering">Computer Engineering</option>
-                                <option value="Electronics Engineering">Electronics Engineering</option>
-                                <option value="EXTC">EXTC</option>
-                                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            <select id="department_id" name="department_id" required>
+                                <option value="">Select Department</option>
+
+                                @foreach($departments as $department)
+                                   <option value="{{ $department->id }}">
+                                      {{ $department->name }}
+                                   </option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group">

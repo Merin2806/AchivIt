@@ -1,8 +1,9 @@
 @php
-    $role = request('role', 'Academic Coordinator');
-    $dept = request('department', 'Information Technology');
+    $faculty = Auth::user();
+    $facultyRole = $faculty->faculty_role;
     
-    if ($role === 'Student Activity Coordinator') {
+    // Filter submissions based on faculty role
+    if ($facultyRole === 'Student Activity Coordinator') {
         $submissions = [
             [
                 'student_name' => 'Merin Jose',
@@ -113,22 +114,22 @@
 <x-faculty-layout>
     @section('top-bar-left')
         <h2 class="text-[16px] font-extrabold text-[#1E293B] tracking-tight">
-            {{ $role === 'Student Activity Coordinator' ? 'Student Activity Coordinator Dashboard' : 'Academic Coordinator Dashboard' }}
+            {{ Auth::user()->faculty_role === 'Student Activity Coordinator' ? 'Student Activity Coordinator Dashboard' : 'Academic Coordinator Dashboard' }}
         </h2>
     @endsection
 
     <div class="max-w-[1200px] mx-auto text-left flex flex-col gap-6">
-        <!-- Greeting Banner -->
+<!-- Greeting Banner -->
         <div class="greeting-card bg-gradient-to-r from-[#1E293B] to-[#1D4ED8] shadow-[0_10px_30px_rgba(30,41,59,0.2)] flex flex-col md:flex-row justify-between items-center gap-6 p-[28px] md:px-[32px]">
             <div class="flex flex-col items-start text-left">
                 <h2 class="text-[20px] font-extrabold text-white tracking-tight mb-1 flex items-center gap-2">
-                    Welcome, {{ $role === 'Student Activity Coordinator' ? 'Dr. Rahul' : 'Dr. Priya' }} 👋
+                    Welcome, {{ Auth::user()->name }} 👋
                 </h2>
                 <div class="text-[14px] text-white/80 font-semibold mb-1">
-                    {{ $role === 'Student Activity Coordinator' ? 'Student Activity Coordinator' : 'Academic Coordinator' }}
+                    {{ Auth::user()->faculty_role ?? 'Faculty' }}
                 </div>
                 <div class="text-[13px] text-white/70">
-                    {{ $dept }} Department
+                    {{ Auth::user()->department?->name ?? 'Department' }}
                 </div>
             </div>
             <!-- Large cap icon -->
@@ -224,17 +225,7 @@
                                 <td class="text-[#64748B]">{{ $sub['date'] }}</td>
                                 <td><span class="badge badge-pending">&#9203; Pending</span></td>
                                 <td>
-                                    <a href="{{ route('faculty.review', [
-                                        'department' => $dept,
-                                        'role' => $role,
-                                        'student_name' => $sub['student_name'],
-                                        'roll_no' => $sub['roll_no'],
-                                        'initials' => $sub['initials'],
-                                        'avatar_color' => $sub['color'],
-                                        'title' => $sub['title'],
-                                        'category' => $sub['category'],
-                                        'domain' => $sub['domain']
-                                    ]) }}" class="btn btn-primary btn-sm rounded-lg py-1 px-3 text-xs flex items-center gap-1">
+                                    <a href="{{ route('faculty.review') }}" class="btn btn-primary btn-sm rounded-lg py-1 px-3 text-xs flex items-center gap-1">
                                         <span>Review</span>
                                         <span>&rarr;</span>
                                     </a>

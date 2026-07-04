@@ -16,18 +16,18 @@
                     {{ Auth::user()->name }}
                 </h2>
                 <p class="text-[14px] text-[#64748B] font-medium mb-3">
-                    Bachelor of Technology in Computer Science & Engineering
+                    Bachelor of Technology in {{ Auth::user()->department->name ?? 'N/A' }}
                 </p>
                 <!-- Meta chips -->
                 <div class="flex flex-wrap justify-center sm:justify-start gap-2 text-[12px] font-bold text-[#2563EB]">
                     <span class="inline-flex items-center gap-1 px-3 py-1 bg-white border border-[#DBEAFE] rounded-full">
-                        📘 Roll: 21CS047
+                        📘 Roll: {{ Auth::user()->roll_no ?? 'N/A' }}
                     </span>
                     <span class="inline-flex items-center gap-1 px-3 py-1 bg-white border border-[#DBEAFE] rounded-full">
-                        🎓 S4 — 2nd Year
+                        🎓 S{{ Auth::user()->semester ?? 'N/A' }} — {{ Auth::user()->year ?? 'N/A' }} Year
                     </span>
                     <span class="inline-flex items-center gap-1 px-3 py-1 bg-white border border-[#DBEAFE] rounded-full">
-                        ✅ 7 Approved
+                        📦 Batch: {{ Auth::user()->batch ?? 'N/A' }}
                     </span>
                 </div>
             </div>
@@ -56,7 +56,7 @@
 
                     <div class="info-card">
                         <span class="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider block mb-1">Roll Number</span>
-                        <span class="text-[15px] font-bold text-[#1E293B]">21CS047</span>
+                        <span class="text-[15px] font-bold text-[#1E293B]">{{ Auth::user()->roll_no ?? 'N/A' }}</span>
                     </div>
 
                     <div class="info-card">
@@ -66,28 +66,54 @@
 
                     <div class="info-card">
                         <span class="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider block mb-1">Phone Number</span>
-                        <span class="text-[15px] font-bold text-[#1E293B]">+91 98765 43210</span>
+                        <span class="text-[15px] font-bold text-[#1E293B]">{{ Auth::user()->phone ?? 'N/A' }}</span>
                     </div>
 
                     <div class="info-card">
                         <span class="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider block mb-1">Branch</span>
-                        <span class="text-[15px] font-bold text-[#1E293B]">Computer Science Engineering</span>
+                        <span class="text-[15px] font-bold text-[#1E293B]">{{ Auth::user()->department->name ?? 'N/A' }}</span>
                     </div>
 
                     <div class="info-card">
                         <span class="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider block mb-1">Year / Semester</span>
-                        <span class="text-[15px] font-bold text-[#1E293B]">2nd Year / S4</span>
+                        <span class="text-[15px] font-bold text-[#1E293B]">{{ Auth::user()->year ?? 'N/A' }} Year / S{{ Auth::user()->semester ?? 'N/A' }}</span>
                     </div>
 
                     <div class="info-card">
                         <span class="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider block mb-1">Batch</span>
-                        <span class="text-[15px] font-bold text-[#1E293B]">2021 - 2025</span>
+                        <span class="text-[15px] font-bold text-[#1E293B]">{{ Auth::user()->batch ?? 'N/A' }}</span>
                     </div>
+                </div>
+            </div>
 
-                    <div class="info-card">
-                        <span class="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider block mb-1">Faculty Advisor</span>
-                        <span class="text-[15px] font-bold text-[#1E293B]">Dr. Priya Nair</span>
-                    </div>
+            <!-- Faculty Advisors Section -->
+            @php
+                $facultyAssignments = \App\Models\FacultyAssignment::with('faculty')
+                    ->where('department_id', Auth::user()->department_id)
+                    ->get()
+                    ->groupBy('domain');
+            @endphp
+            <div class="flex flex-col items-start">
+                <h3 class="text-[15px] font-bold text-[#1E293B] mb-4">Faculty Advisors</h3>
+                
+                <div class="info-grid w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+                    @foreach(['Academic', 'Extra-Curricular'] as $domain)
+                        @php
+                            $assignment = $facultyAssignments->get($domain)?->first();
+                            $faculty = $assignment?->faculty;
+                        @endphp
+                        <div class="info-card">
+                            <span class="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider block mb-2">
+                                {{ $domain }} Coordinator
+                            </span>
+                            @if($faculty)
+                                <span class="text-[15px] font-bold text-[#1E293B] block">{{ $faculty->name }}</span>
+                                <span class="text-[12px] text-[#64748B]">{{ $faculty->email }}</span>
+                            @else
+                                <span class="text-[15px] font-bold text-[#64748B]">Not Assigned</span>
+                            @endif
+                        </div>
+                    @endforeach
                 </div>
             </div>
 
@@ -139,6 +165,62 @@
                             <input id="email" name="email" type="email" value="{{ old('email', Auth::user()->email) }}" required autocomplete="username">
                             <x-input-error class="mt-2" :messages="$errors->get('email')" />
                         </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input id="phone" name="phone" type="text" value="{{ old('phone', Auth::user()->phone) }}" required placeholder="10-digit phone number" autocomplete="tel">
+                            <x-input-error class="mt-2" :messages="$errors->get('phone')" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="roll_no">Roll Number</label>
+                            <input id="roll_no" name="roll_no" type="text" value="{{ old('roll_no', Auth::user()->roll_no) }}" required autocomplete="off">
+                            <x-input-error class="mt-2" :messages="$errors->get('roll_no')" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="department_id">Department</label>
+                            <select id="department_id" name="department_id" required>
+                                <option value="">Select Department</option>
+                                @foreach($departments as $dept)
+                                    <option value="{{ $dept->id }}" {{ old('department_id', Auth::user()->department_id) == $dept->id ? 'selected' : '' }}>
+                                        {{ $dept->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error class="mt-2" :messages="$errors->get('department_id')" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="year">Academic Year</label>
+                            <select id="year" name="year" required>
+                                <option value="">Select Year</option>
+                                @for($i = 1; $i <= 4; $i++)
+                                    <option value="{{ $i }}" {{ old('year', Auth::user()->year) == $i ? 'selected' : '' }}>
+                                        {{ $i }} Year
+                                    </option>
+                                @endfor
+                            </select>
+                            <x-input-error class="mt-2" :messages="$errors->get('year')" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="semester">Semester</label>
+                            <select id="semester" name="semester" required>
+                                <option value="">Select Semester</option>
+                                @for($i = 1; $i <= 8; $i++)
+                                    <option value="{{ $i }}" {{ old('semester', Auth::user()->semester) == $i ? 'selected' : '' }}>
+                                        Semester {{ $i }}
+                                    </option>
+                                @endfor
+                            </select>
+                            <x-input-error class="mt-2" :messages="$errors->get('semester')" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="batch">Batch</label>
+                            <input id="batch" name="batch" type="text" value="{{ old('batch', Auth::user()->batch) }}" required placeholder="e.g., 2021-2025" autocomplete="off">
+                            <x-input-error class="mt-2" :messages="$errors->get('batch')" />
 
                         <div class="flex items-center gap-4">
                             <button type="submit" class="btn btn-primary btn-sm rounded-lg">Save Information</button>

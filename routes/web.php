@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AchievementController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,26 +18,25 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
     // Student Achievement Submission and History
-    Route::get('/achievements/submit', function () {
-        return view('student.submit');
-    })->name('student.submit');
+    Route::get('/achievements/create', [AchievementController::class, 'create'])->name('student.submit');
+    Route::post('/achievements', [AchievementController::class, 'store'])->name('achievements.store');
+    Route::get('/achievements', [AchievementController::class, 'index'])->name('student.history');
 
-    Route::get('/achievements/history', function () {
-        return view('student.history');
-    })->name('student.history');
+    // Faculty Portal routes (protected by auth middleware)
+    Route::group(['prefix' => 'faculty', 'as' => 'faculty.'], function () {
+        Route::get('/dashboard', function () {
+            return view('faculty.dashboard');
+        })->name('dashboard');
+
+        Route::get('/review', function () {
+            return view('faculty.review');
+        })->name('review');
+    });
 });
 
-// Faculty Portal frontend routes
+// Faculty Portal login (guest only)
 Route::get('/faculty/login', function () {
     return view('faculty.login');
-})->name('faculty.login');
-
-Route::get('/faculty/dashboard', function () {
-    return view('faculty.dashboard');
-})->name('faculty.dashboard');
-
-Route::get('/faculty/review', function () {
-    return view('faculty.review');
-})->name('faculty.review');
+})->middleware('guest')->name('faculty.login');
 
 require __DIR__.'/auth.php';

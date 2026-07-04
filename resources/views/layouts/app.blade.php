@@ -92,6 +92,9 @@
 
             <!-- Main Content Area -->
             <div class="main-content">
+                <!-- Flash Messages -->
+                <x-flash-message />
+
                 <!-- Top Bar -->
                 <header class="top-bar">
                     <!-- Left: Page Title or Back buttons -->

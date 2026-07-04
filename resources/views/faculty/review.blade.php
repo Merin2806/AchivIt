@@ -6,9 +6,6 @@
     $title = request('title', 'Smart India Hackathon 2025 Winner');
     $category = request('category', 'Competition');
     $domain = request('domain', 'Academic');
-    
-    $dept = request('department', 'Information Technology');
-    $role = request('role', 'Academic Coordinator');
 
     $descriptions = [
         'Smart India Hackathon 2025 Winner' => 'Our team won 1st place in the National Smart India Hackathon 2025 under the Ministry of Education for the prototype software addressing smart waste management. The project utilized IoT triggers and predictive routing algorithms.',
@@ -28,7 +25,7 @@
 @endphp
 <x-faculty-layout>
     @section('top-bar-left')
-        <a href="{{ route('faculty.dashboard', ['department' => $dept, 'role' => $role]) }}" class="btn btn-ghost btn-sm rounded-lg shrink-0">
+        <a href="{{ route('faculty.dashboard') }}" class="btn btn-ghost btn-sm rounded-lg shrink-0">
             <!-- Back Arrow icon -->
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>

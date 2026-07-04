@@ -14,11 +14,14 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 submit-layout">
             <!-- Left: Form Card (Col Span 7) -->
             <div class="lg:col-span-7 card-elevated p-6 md:p-8">
-                <form action="{{ route('student.history') }}" method="GET" class="flex flex-col">
+                <form action="{{ route('achievements.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col">
+                    @csrf
+
                     <!-- Achievement Title -->
                     <div class="form-group">
                         <label for="title">Achievement Title *</label>
-                        <input type="text" id="title" required placeholder="e.g. AWS Certified Solutions Architect">
+                        <input type="text" id="title" name="title" required placeholder="e.g. AWS Certified Solutions Architect" value="{{ old('title') }}">
+                        <x-input-error class="mt-2" :messages="$errors->get('title')" />
                     </div>
 
                     <!-- Domain & Category (Two-col) -->
@@ -27,27 +30,56 @@
                             <label for="domain">Achievement Domain *</label>
                             <select id="domain" name="domain" required>
                                 <option value="" disabled selected>Select Domain</option>
-                                <option value="Academic">📚 Academic</option>
-                                <option value="Extra-Curricular">🎨 Extra-Curricular</option>
+                                <option value="Academic" @if(old('domain') === 'Academic') selected @endif>📚 Academic</option>
+                                <option value="Extra-Curricular" @if(old('domain') === 'Extra-Curricular') selected @endif>🎨 Extra-Curricular</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="category">Category *</label>
-                            <select id="category" name="category" required disabled>
+                            <label for="category_id">Category *</label>
+                            <select id="category_id" name="category_id" required disabled>
                                 <option value="" disabled selected>Select Category</option>
                             </select>
+                            <x-input-error class="mt-2" :messages="$errors->get('category_id')" />
                         </div>
                     </div>
 
                     <!-- Date & Issuing Organisation (Two-col) -->
                     <div class="two-col">
                         <div class="form-group">
-                            <label for="date">Date of Achievement *</label>
-                            <input type="date" id="date" name="date" required>
+                            <label for="achievement_date">Date of Achievement *</label>
+                            <input type="date" id="achievement_date" name="achievement_date" required value="{{ old('achievement_date') }}">
+                            <x-input-error class="mt-2" :messages="$errors->get('achievement_date')" />
                         </div>
                         <div class="form-group">
-                            <label for="issuer">Issuing Organisation</label>
-                            <input type="text" id="issuer" name="issuer" placeholder="e.g. Amazon Web Services (AWS)">
+                            <label for="organization">Issuing Organisation *</label>
+                            <input type="text" id="organization" name="organization" required placeholder="e.g. Amazon Web Services (AWS)" value="{{ old('organization') }}">
+                            <x-input-error class="mt-2" :messages="$errors->get('organization')" />
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="4" placeholder="Briefly describe what you did, skills learned, or achievements made...">{{ old('description') }}</textarea>
+                        <x-input-error class="mt-2" :messages="$errors->get('description')" />
+                    </div>
+
+                    <!-- File Dropzone -->
+                    <div class="form-group">
+                        <label>Upload Proof Document *</label>
+                        <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+                            <input type="file" id="file-input" name="certificate" class="hidden" required accept=".pdf,.png,.jpg,.jpeg">
+                            
+                            <!-- Cloud Upload icon -->
+                            <svg class="w-10 h-10 text-[#94A3B8] mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                            <span class="text-sm font-bold text-[#1E293B] mb-1">Drag & drop your file here</span>
+                            <span class="text-xs text-[#64748B] mb-3">Supports PDF, JPG, PNG — max 5 MB</span>
+                            <button type="button" class="btn btn-ghost btn-sm rounded-lg">Browse Files</button>
+                        </div>
+                        <x-input-error class="mt-2" :messages="$errors->get('certificate')" />
+                    </div>
                         </div>
                     </div>
 
@@ -145,7 +177,7 @@
         </div>
     </div>
 
-    <!-- Script to handle dynamic file selection display -->
+    <!-- Script to handle dynamic file selection display and category filtering -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // File input upload styling toggle
@@ -179,41 +211,24 @@
                 });
             }
 
+            // Build categories object from PHP data
+            const categoriesData = @json($categories ?? []);
+            const categoriesByDomain = {};
+            
+            categoriesData.forEach(function (cat) {
+                if (!categoriesByDomain[cat.domain]) {
+                    categoriesByDomain[cat.domain] = [];
+                }
+                categoriesByDomain[cat.domain].push({
+                    id: cat.id,
+                    name: cat.category_name,
+                    domain: cat.domain
+                });
+            });
+
             // Dynamic Category dropdown populating based on selected Domain
             const domainSelect = document.getElementById('domain');
-            const categorySelect = document.getElementById('category');
-
-            const categories = {
-                'Academic': [
-                    { value: 'Internship', label: '🏢 Internship' },
-                    { value: 'Hackathon', label: '💻 Hackathon' },
-                    { value: 'Project', label: '🚀 Project' },
-                    { value: 'Research Paper', label: '📄 Research Paper' },
-                    { value: 'Seminar', label: '🎤 Seminar' },
-                    { value: 'Workshop', label: '🛠️ Workshop' },
-                    { value: 'Certification', label: '📜 Certification' },
-                    { value: 'Technical Competition', label: '🏆 Technical Competition' },
-                    { value: 'Patent', label: '💡 Patent' },
-                    { value: 'Publication', label: '📰 Publication' },
-                    { value: 'Training Program', label: '🎓 Training Program' }
-                ],
-                'Extra-Curricular': [
-                    { value: 'Sports', label: '⚽ Sports' },
-                    { value: 'Dance', label: '💃 Dance' },
-                    { value: 'Music', label: '🎵 Music' },
-                    { value: 'Drama', label: '🎭 Drama' },
-                    { value: 'Cultural Event', label: '🎪 Cultural Event' },
-                    { value: 'Art', label: '🎨 Art' },
-                    { value: 'Photography', label: '📷 Photography' },
-                    { value: 'Debate', label: '🗣️ Debate' },
-                    { value: 'Quiz', label: '❓ Quiz' },
-                    { value: 'NSS', label: '🌿 NSS' },
-                    { value: 'NCC', label: '🎖️ NCC' },
-                    { value: 'Volunteer Work', label: '🤝 Volunteer Work' },
-                    { value: 'Social Service', label: '🌍 Social Service' },
-                    { value: 'Other', label: '✨ Other' }
-                ]
-            };
+            const categorySelect = document.getElementById('category_id');
 
             if (domainSelect && categorySelect) {
                 domainSelect.addEventListener('change', function () {
@@ -222,11 +237,11 @@
                     // Clear previous options except placeholder
                     categorySelect.innerHTML = '<option value="" disabled selected>Select Category</option>';
                     
-                    if (categories[selectedDomain]) {
-                        categories[selectedDomain].forEach(function (cat) {
+                    if (categoriesByDomain[selectedDomain]) {
+                        categoriesByDomain[selectedDomain].forEach(function (cat) {
                             const option = document.createElement('option');
-                            option.value = cat.value;
-                            option.textContent = cat.label;
+                            option.value = cat.id;
+                            option.textContent = cat.name;
                             categorySelect.appendChild(option);
                         });
                         categorySelect.disabled = false;

@@ -56,40 +56,29 @@
                 </div>
 
                 <!-- Login Form -->
-                <form method="GET" action="{{ route('faculty.dashboard') }}">
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
+
                     <!-- Faculty Email -->
                     <div class="form-group">
                         <label for="email">Faculty Email Address</label>
-                        <input id="email" type="email" name="email" required autocomplete="username" placeholder="e.g. priya.nair@college.edu">
+                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username" placeholder="e.g. priya.nair@college.edu">
+                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
                     <!-- Password -->
-                    <div class="form-group">
+                    <div class="form-group mb-4">
                         <label for="password">Password</label>
-                        <input id="password" type="password" name="password" required placeholder="••••••••">
+                        <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="••••••••">
+                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
                     </div>
 
-                    <!-- Department Dropdown -->
-                    <div class="form-group">
-                        <label for="department">Department</label>
-                        <select id="department" name="department" required>
-                            <option value="" disabled selected>Select Department</option>
-                            <option value="Information Technology">Information Technology</option>
-                            <option value="Computer Engineering">Computer Engineering</option>
-                            <option value="EXTC">EXTC</option>
-                            <option value="Electronics">Electronics</option>
-                            <option value="Mechanical">Mechanical</option>
-                        </select>
-                    </div>
-
-                    <!-- Reviewer Role Dropdown -->
-                    <div class="form-group mb-6">
-                        <label for="role">Reviewer Role</label>
-                        <select id="role" name="role" required>
-                            <option value="" disabled selected>Select Reviewer Role</option>
-                            <option value="Academic Coordinator">Academic Coordinator</option>
-                            <option value="Student Activity Coordinator">Student Activity Coordinator</option>
-                        </select>
+                    <!-- Remember Me -->
+                    <div class="flex items-center justify-between mb-6 text-[13px]">
+                        <label for="remember_me" class="inline-flex items-center cursor-pointer">
+                            <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-[#2563EB] shadow-sm focus:ring-[#2563EB] focus:ring-opacity-20" name="remember">
+                            <span class="ml-2 text-[#64748B] font-medium">Remember me</span>
+                        </label>
                     </div>
 
                     <!-- Sign In Button -->
